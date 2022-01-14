@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bookstore.DAL.EF.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.Backend
 {
@@ -26,6 +28,8 @@ namespace Bookstore.Backend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration.GetConnectionString("bookStore");
+            services.AddDbContext<BookStoreDbContext>(x => x.UseSqlServer(connectionString));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
