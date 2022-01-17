@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Bookstore.BLL.Services
 {
-    class TypeOFBookService
+    public class TypeOfBookService : ITypeOfBookService
+    {
+    }
+
+    public interface ITypeOfBookService
     {
     }
 }

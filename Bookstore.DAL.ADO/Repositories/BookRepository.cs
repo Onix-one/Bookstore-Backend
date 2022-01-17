@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Threading.Tasks;
-using Bookstore.Core.Entities;
+using Bookstore.Core.Models.Entities;
+using Bookstore.Core.Models.ModelsDTO.FilterModels;
+using Bookstore.DAL.ADO.Extensions;
 using Bookstore.DAL.ADO.Repositories.Interfaces;
 using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories;
@@ -17,11 +20,17 @@ namespace Bookstore.DAL.ADO.Repositories
         {
         }
 
-        public async Task<List<Book>> GetBooksByAuthor(Author author)
+        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthor(Author author)
         {
-            var sqlExpression = string.Format($"SELECT * FROM Books WHERE AuthorId == @AuthorId");
-            List<Book> result = new List<Book>();
-            using (var connection = new SqlConnection(connectionString))
+            var sqlExpression = string.Format($"SELECT Books.Id,Books.Rating, Books.Name, Books.Price,Books.Summary, TypeOfBooks.Id, TypeOfBooks.Type,BookImages.Id,BookImages.Image" +
+                                              "FROM Authors" +
+                                              "JOIN AuthorBook ON AuthorBook.AuthorsId = Authors.Id and AuthorBook.AuthorsId = @AuthorId" +
+                                              "JOIN Books ON Books.Id = AuthorBook.BooksId"+
+                                              "JOIN BookImages ON BookImages.BookId =Books.Id "+
+                                              "JOIN BookTypeOfBook ON BookTypeOfBook.BooksId =Books.Id " +
+                                              "JOIN TypeOfBooks ON BookTypeOfBook.TypesOfBookId =TypeOfBooks.Id ");
+            List<BooksForAuthorFilter> result = new List<BooksForAuthorFilter>();
+            using (var connection = new SqlConnection(connectionString)) // TODO DI pass sqlConnection
             {
                 connection.Open();
                 var command = new SqlCommand(sqlExpression, connection);
@@ -32,19 +41,27 @@ namespace Bookstore.DAL.ADO.Repositories
                 var reader = await command.ExecuteReaderAsync();
                 if (reader.HasRows)
                 {
-                    while (reader.Read())
+                    //reader.NextResult();
+                    while (await reader.ReadAsync())
                     {
-                        var book = new Book();
-                        book.Id = reader.GetInt32(0);
-                        book.Name = reader.GetString(1);
-                        book.Rating = reader.GetInt32(2);
-                        book.Price = reader.GetDouble(3);
-                        book.Summary = reader.GetString(4); //TODO add images
+                        var book = new BooksForAuthorFilter();
+                        book.Id = await reader.ReadInt("Id");
+                        book.Name = await reader.ReadString("Name");
+                        book.Rating = await reader.ReadInt("Rating");
+                        book.Summary = await reader.ReadString("Summary");
 
+                        var typeOfbook = new TypeOfBookForAuthorFiltr();
+                        typeOfbook.Id = await reader.ReadInt("Id");
+                        //typeOfbook.Type = await reader.ReadInt("Type");  // TODO 1. What about enum in database. 2. How to Map
+                        book.TypesOfBook.Add(typeOfbook);
                         result.Add(book);
                     }
                 }
-
+                else
+                {
+                    throw new SqlNullValueException();
+                }
+                await connection.CloseAsync();
                 return result;
             }
         }

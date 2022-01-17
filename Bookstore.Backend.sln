@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32002.261
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookstore.Backend", "Bookstore.Backend\Bookstore.Backend.csproj", "{2C6B08D8-CF30-4564-B159-9D48622901F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.Backend", "Bookstore.Backend\Bookstore.Backend.csproj", "{2C6B08D8-CF30-4564-B159-9D48622901F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookstore.IdentityApi", "Bookstore.IdentityApi\Bookstore.IdentityApi.csproj", "{C20D7A1B-E8D1-4A8D-96E3-D2CB67EA9725}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.IdentityApi", "Bookstore.IdentityApi\Bookstore.IdentityApi.csproj", "{C20D7A1B-E8D1-4A8D-96E3-D2CB67EA9725}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookstore.BLL", "Bookstore.BLL\Bookstore.BLL.csproj", "{0568216E-7F0C-4212-A833-E217DDF176DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.BLL", "Bookstore.BLL\Bookstore.BLL.csproj", "{0568216E-7F0C-4212-A833-E217DDF176DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookstore.Core", "Bookstore.Core\Bookstore.Core.csproj", "{FECE95C1-C3E9-46D7-9CC0-056B370E0E55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.Core", "Bookstore.Core\Bookstore.Core.csproj", "{FECE95C1-C3E9-46D7-9CC0-056B370E0E55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookstore.DAL.EF", "Bookstore.DAL.EF\Bookstore.DAL.EF.csproj", "{985CF6C6-65B1-4A3D-BAB4-6974884158D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.DAL.EF", "Bookstore.DAL.EF\Bookstore.DAL.EF.csproj", "{985CF6C6-65B1-4A3D-BAB4-6974884158D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookstore.DAL.ADO", "Bookstore.DAL.ADO\Bookstore.DAL.ADO.csproj", "{1152C67C-F9E3-4BC5-9CAE-539C3416803B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.DAL.ADO", "Bookstore.DAL.ADO\Bookstore.DAL.ADO.csproj", "{1152C67C-F9E3-4BC5-9CAE-539C3416803B}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BookStore.Database", "BookStore.Database\BookStore.Database.sqlproj", "{2337D0A4-301E-453D-8222-330D53F39063}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,12 @@ Global
 		{1152C67C-F9E3-4BC5-9CAE-539C3416803B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1152C67C-F9E3-4BC5-9CAE-539C3416803B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1152C67C-F9E3-4BC5-9CAE-539C3416803B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2337D0A4-301E-453D-8222-330D53F39063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2337D0A4-301E-453D-8222-330D53F39063}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2337D0A4-301E-453D-8222-330D53F39063}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2337D0A4-301E-453D-8222-330D53F39063}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2337D0A4-301E-453D-8222-330D53F39063}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2337D0A4-301E-453D-8222-330D53F39063}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

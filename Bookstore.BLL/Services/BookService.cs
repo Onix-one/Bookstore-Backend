@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Bookstore.BLL.Interfaces;
-using Bookstore.BLL.Models;
-using Bookstore.Core.Entities;
+using Bookstore.Core.Models.Entities;
+using Bookstore.Core.Models.ModelsDTO;
+using Bookstore.Core.Models.ModelsDTO.FilterModels;
 using Bookstore.DAL.ADO.Repositories;
 using Bookstore.DAL.ADO.Repositories.Interfaces;
 using Bookstore.DAL.EF.Repositories;
@@ -25,7 +26,7 @@ namespace Bookstore.BLL.Services
             _authorRepository = authorRepository;
         }
 
-        public async Task AddNewBook(BookDTO book)
+        public async Task AddNewBook(Book book)
         {
             var newBook = _mapper.Map<Book>(book);
             await _bookRepository.Save(newBook);
@@ -43,7 +44,21 @@ namespace Bookstore.BLL.Services
             await _bookRepository.Delete(bookToDelete);
         }
 
-        public async Task<List<Book>> GetBooksByAuthor(int authorId)
+        public async Task<BookDTO> GetBookById(int bookId) //TODO how to take all needed data
+        {
+            var book = await _bookRepository.GetById(bookId);
+
+            if (book == null)
+            {
+                throw new ArgumentNullException(nameof(book), $"Book with id={bookId} doesn't exist");
+            }
+
+            var result = _mapper.Map<BookDTO>(book); //TODO not work  
+
+            return result;
+        }
+
+        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthor(int authorId)
         {
             var author = await _authorRepository.GetById(authorId);
 

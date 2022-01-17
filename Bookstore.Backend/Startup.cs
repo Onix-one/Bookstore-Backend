@@ -6,11 +6,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bookstore.Backend.Extensions;
 using Bookstore.DAL.EF.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,10 +32,10 @@ namespace Bookstore.Backend
             services.AddDbContext<BookStoreDbContext>(x => x.UseSqlServer(connectionString));
 
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bookstore.Backend", Version = "v1" });
-            });
+            services.AddSwagger();
+            services.AddMapper();
+            services.AddServices();
+            services.AddRepositories();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

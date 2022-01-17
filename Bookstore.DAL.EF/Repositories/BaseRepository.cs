@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bookstore.Core.Entities;
 using Bookstore.Core.Interfaces;
+using Bookstore.Core.Models.Entities;
 using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.DAL.EF.Repositories
 {
-    public abstract class BaseRepository<Model> :IBaseRepository<Model> where Model : BaseModel
+    public abstract class BaseRepository<Model> : IBaseRepository<Model> where Model : BaseModel
     {
         private BookStoreDbContext _bookStoreDbContext;
         private protected DbSet<Model> _dbSet;

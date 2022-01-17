@@ -3,11 +3,15 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
-using Bookstore.Backend.Models;
 using Bookstore.BLL.Interfaces;
-using Bookstore.BLL.Models;
+using Bookstore.Core.Models.Entities;
+using Bookstore.Core.Models.ModelsDTO;
+using Bookstore.Core.Models.ModelsDTO.BookModels;
+using Bookstore.Core.Models.ModelsDTO.FilterModels;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Bookstore.Backend.Controllers
 {
@@ -26,28 +30,35 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpGet]
-        public async Task CreateBook(Book book) // TODO What to return
+        public async Task<ActionResult> CreateBook(CreateNewBookModel book) // TODO How to check result
         {
-            var newBook = _mapper.Map<BookDTO>(book); 
+            var newBook = _mapper.Map<Book>(book); // TODO HowtoMap
             await _bookService.AddNewBook(newBook);
+            return Ok();
 
         }
         [HttpDelete]// TODO What to return
         public async Task DeleteBook(int bookId)
         {
-           await _bookService.DeleteBook(bookId);
-        }
-        [HttpDelete]
-        public async Task GetBook()
-        {
-
+            await _bookService.DeleteBook(bookId);
         }
         [HttpGet]
-        public async Task<List<Book>> GetBooksByAuthor(int AuthorId) // TODO What to return
+        public async Task GetBook(int bookId)
         {
-              await _bookService.GetBooksByAuthor(AuthorId);
 
-              throw new Exception();
+        }
+
+        [HttpGet]
+        [SwaggerResponse(200,Type = typeof(List<BooksForAuthorFilter>))]
+        public async Task<ActionResult> GetBooksByAuthor(int AuthorId) // TODO What to return
+        {
+            var result = await _bookService.GetBooksByAuthor(AuthorId);
+
+            if (!result.Any())
+            {
+                return BadRequest();
+            }
+            return Ok(result);
         }
     }
 }
