@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.13">
@@ -21,7 +22,6 @@
     <ProjectReference Include="..\Bookstore.Core\Bookstore.Core.csproj" />
     <ProjectReference Include="..\Bookstore.DAL.ADO\Bookstore.DAL.ADO.csproj" />
     <ProjectReference Include="..\Bookstore.DAL.EF\Bookstore.DAL.EF.csproj" />
-    <ProjectReference Include="..\Bookstore.IdentityApi\Bookstore.IdentityApi.csproj" />
   </ItemGroup>
 
 </Project>
