@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Bookstore.BLL.Services;
+using Bookstore.Core.Models.ModelsDTO;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using AutoMapper;
-using Bookstore.BLL.Services;
-using Bookstore.Core.Models.ModelsDTO;
 
 namespace Bookstore.Backend.Controllers
 {
@@ -14,8 +12,8 @@ namespace Bookstore.Backend.Controllers
     [ApiController]
     public class BookImageController : ControllerBase
     {
-        private IBookImageService _bookImageService;
-        private IMapper _mapper;
+        private readonly IBookImageService _bookImageService;
+        private readonly IMapper _mapper;
 
         public BookImageController(IBookImageService bookImageService, IMapper mapper)
         {
@@ -23,17 +21,15 @@ namespace Bookstore.Backend.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddImageToBook([FromBody]List<BookImageDTO> images, int bookId)
+        [HttpPost] //TODO not work iFormFile
+        public async Task<ActionResult> AddImageToBook([FromBody] List<BookImageDTO> images, int bookId)
         {
             throw new Exception();
         }
 
         [HttpDelete]
-        public async Task<ActionResult> DeleteImage( int imageId)
+        public async Task<ActionResult> DeleteImage(int imageId)
         {
-
-
             throw new Exception();
         }
     }

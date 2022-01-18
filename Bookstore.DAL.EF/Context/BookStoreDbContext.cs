@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using Bookstore.Core.Models.Entities;
+﻿using Bookstore.Core.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.DAL.EF.Context
 {
-    public  class BookStoreDbContext: DbContext
+    public class BookStoreDbContext : DbContext
     {
         public BookStoreDbContext(DbContextOptions options) : base(options)
         {
@@ -18,8 +12,7 @@ namespace Bookstore.DAL.EF.Context
         public virtual DbSet<Author> Authors { get; set; }
         public virtual DbSet<Book> Books { get; set; }
         public virtual DbSet<BookImage> BookImages { get; set; }
-        public virtual DbSet<ExchangeRate> ExchangeRates { get; set; }
-        public virtual DbSet<TypeOfBook> TypeOfBooks { get; set; }
+        public virtual DbSet<GenreOfBook> GenresOfBooks { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,11 +20,7 @@ namespace Bookstore.DAL.EF.Context
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Book>()
-                .HasMany(x => x.TypesOfBook)
-                .WithMany(x => x.Books);
-
-            modelBuilder.Entity<Book>()
-                .HasMany(x => x.Authors)
+                .HasMany(x => x.GenresOfBook)
                 .WithMany(x => x.Books);
 
             modelBuilder.Entity<Book>()
@@ -41,9 +30,9 @@ namespace Bookstore.DAL.EF.Context
             modelBuilder.Entity<Book>()
                 .HasMany(x => x.Buyers)
                 .WithMany(x => x.BroughtBooks);
-            
+
             modelBuilder.Entity<Book>()
-                .HasMany(x => x.ReadyToPay)
+                .HasMany(x => x.CustomersWantedToBuy)
                 .WithMany(x => x.BooksReadyToBuy);
 
             modelBuilder.Entity<Book>()
@@ -52,11 +41,15 @@ namespace Bookstore.DAL.EF.Context
 
             modelBuilder.Entity<Customer>()
                 .HasMany(x => x.FavoriteTypes)
-                .WithMany(x => x.FansOfTypes);
+                .WithMany(x => x.FansOfGenres);
 
             modelBuilder.Entity<Author>()
-                .HasMany(x => x.TypesOfBooks)
+                .HasMany(x => x.GenresOfBooks)
                 .WithMany(x => x.Authors);
+
+            modelBuilder.Entity<Book>()
+                .HasMany(x => x.Images)
+                .WithOne(x => x.Book);
         }
     }
 }

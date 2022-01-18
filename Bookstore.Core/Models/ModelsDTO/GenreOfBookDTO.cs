@@ -1,8 +1,6 @@
-﻿using Bookstore.Core.Enums;
-
-namespace Bookstore.Core.Models.ModelsDTO
+﻿namespace Bookstore.Core.Models.ModelsDTO
 {
-    public class TypeOfBookDTO
+    public class GenreOfBookDTO
     {
         public int Id { get; set; }
         public string Type { get; set; }

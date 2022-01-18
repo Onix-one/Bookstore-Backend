@@ -2,6 +2,7 @@
 using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Bookstore.Core.Models.Entities;
+using Bookstore.Core.Models.ModelsDTO.BookModels;
 using Bookstore.Core.Models.ModelsDTO.FilterModels;
 using Bookstore.DAL.ADO.Extensions;
 using Bookstore.DAL.ADO.Repositories.Interfaces;
@@ -11,24 +12,24 @@ using Microsoft.Data.SqlClient;
 
 namespace Bookstore.DAL.ADO.Repositories
 {
-    public class BookRepository : BaseRepository<Book>, IBookRepository
+    public class BookRepositoryAdo : BaseRepository<Book>, IBookRepositoryAdo
     {
         //TODO How not to harcode
         string connectionString = @"Data Source=(localdb)\\MSSQLLocalDB;Database=bookStore;Trusted_Connection=True;";
 
-        public BookRepository(BookStoreDbContext bookStoreDbContext) : base(bookStoreDbContext)
+        public BookRepositoryAdo(BookStoreDbContext bookStoreDbContext) : base(bookStoreDbContext)
         {
         }
 
-        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthor(Author author)
+        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(Author author)
         {
-            var sqlExpression = string.Format($"SELECT Books.Id,Books.Rating, Books.Name, Books.Price,Books.Summary, TypeOfBooks.Id, TypeOfBooks.Type,BookImages.Id,BookImages.Image" +
+            var sqlExpression = string.Format($"SELECT Books.Id,Books.Rating, Books.Name, Books.Price,Books.Description, GenresOfBooks.Id, GenresOfBooks.Genre,BookImages.Id,BookImages.Image" +
                                               "FROM Authors" +
                                               "JOIN AuthorBook ON AuthorBook.AuthorsId = Authors.Id and AuthorBook.AuthorsId = @AuthorId" +
-                                              "JOIN Books ON Books.Id = AuthorBook.BooksId"+
-                                              "JOIN BookImages ON BookImages.BookId =Books.Id "+
+                                              "JOIN Books ON Books.Id = AuthorBook.BooksId" +
+                                              "JOIN BookImages ON BookImages.BookId =Books.Id " +
                                               "JOIN BookTypeOfBook ON BookTypeOfBook.BooksId =Books.Id " +
-                                              "JOIN TypeOfBooks ON BookTypeOfBook.TypesOfBookId =TypeOfBooks.Id ");
+                                              "JOIN GenresOfBooks ON BookTypeOfBook.GenresOfBookId =GenresOfBooks.Id ");
             List<BooksForAuthorFilter> result = new List<BooksForAuthorFilter>();
             using (var connection = new SqlConnection(connectionString)) // TODO DI pass sqlConnection
             {
@@ -48,12 +49,12 @@ namespace Bookstore.DAL.ADO.Repositories
                         book.Id = await reader.ReadInt("Id");
                         book.Name = await reader.ReadString("Name");
                         book.Rating = await reader.ReadInt("Rating");
-                        book.Summary = await reader.ReadString("Summary");
+                        book.Description = await reader.ReadString("Description");
 
-                        var typeOfbook = new TypeOfBookForAuthorFiltr();
+                        var typeOfbook = new GenreOfBookForAuthorFiltr();
                         typeOfbook.Id = await reader.ReadInt("Id");
-                        //typeOfbook.Type = await reader.ReadInt("Type");  // TODO 1. What about enum in database. 2. How to Map
-                        book.TypesOfBook.Add(typeOfbook);
+                        //typeOfbook.Genre = await reader.ReadInt("Genre");  // TODO 1. What about enum in database. 2. How to Map
+                        book.GenresOfBook.Add(typeOfbook);
                         result.Add(book);
                     }
                 }

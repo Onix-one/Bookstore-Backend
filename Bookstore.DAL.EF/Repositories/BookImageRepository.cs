@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Bookstore.Core.Models.Entities;
+﻿using Bookstore.Core.Models.Entities;
 using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Bookstore.DAL.EF.Repositories
 {
@@ -15,12 +13,12 @@ namespace Bookstore.DAL.EF.Repositories
         {
         }
 
-        public async Task AddImagesToBook(List<BookImage> images, int bookId)
+        public async Task AddImagesToBookAsync(List<BookImage> images, int bookId)
         {
 
         }
 
-        public async Task<List<BookImage>> GetAllImagesByBookId(int bookId)
+        public async Task<List<BookImage>> GetAllImagesByBookIdAsync(int bookId)
         {
             throw new Exception();
         }

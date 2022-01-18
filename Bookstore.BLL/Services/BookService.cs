@@ -1,52 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Bookstore.BLL.Interfaces;
 using Bookstore.Core.Models.Entities;
 using Bookstore.Core.Models.ModelsDTO;
+using Bookstore.Core.Models.ModelsDTO.BookModels;
 using Bookstore.Core.Models.ModelsDTO.FilterModels;
-using Bookstore.DAL.ADO.Repositories;
 using Bookstore.DAL.ADO.Repositories.Interfaces;
 using Bookstore.DAL.EF.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Bookstore.BLL.Services
 {
     public class BookService : IBookService
     {
+        private readonly IBookRepositoryAdo _bookRepositoryAdo;
         private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;
         private readonly IAuthorRepository _authorRepository;
-        public BookService(IBookRepository bookRepository, IMapper mapper, IAuthorRepository authorRepository)
+        private readonly IBookImageService _bookImageService;
+        private readonly IBookImageRepository _bookImageRepository;
+        private readonly IGenreOfBookRepository _genreOfBookRepository;
+        public BookService(IBookRepositoryAdo bookRepositoryAdo,
+            IMapper mapper,
+            IAuthorRepository authorRepository,
+            IBookRepository bookRepository,
+            IBookImageRepository bookImageRepository,
+            IBookImageService bookImageService, IGenreOfBookRepository genreOfBookRepository)
         {
-            _bookRepository = bookRepository;
+            _bookRepositoryAdo = bookRepositoryAdo;
             _mapper = mapper;
             _authorRepository = authorRepository;
+            _bookRepository = bookRepository;
+            _bookImageRepository = bookImageRepository;
+            _bookImageService = bookImageService;
+            _genreOfBookRepository = genreOfBookRepository;
         }
 
-        public async Task AddNewBook(Book book)
+        public async Task AddNewBookAsync(CreateNewBookModel book)
         {
+            var images = await _bookImageService.ConvertIFormFileToListOfBookImagesAsync(book.ImageFiles);
+
+            var genres = new List<GenreOfBook>();
+            var authors = new List<Author>();
+
+            foreach (var id in book.GenresOfBookId)
+            {
+                var genre = await _genreOfBookRepository.GetByIdAsync(id);
+                genres.Add(genre);
+            }
+
+            foreach (var id in book.AuthorsId)
+            {
+                var author = await _authorRepository.GetByIdAsync(id);
+                authors.Add(author);
+            }
+
+
             var newBook = _mapper.Map<Book>(book);
-            await _bookRepository.Save(newBook);
+
+            newBook.Authors = authors;
+            newBook.GenresOfBook = genres;
+            newBook.Images = images;
+
+            await _bookRepositoryAdo.SaveAsync(newBook);
         }
 
-        public async Task DeleteBook(int bookId)
+        public async Task DeleteBookAsync(int bookId)
         {
-            var bookToDelete = await _bookRepository.GetById(bookId);
+            var bookToDelete = await _bookRepositoryAdo.GetByIdAsync(bookId);
 
             if (bookToDelete == null)
             {
                 throw new ArgumentNullException(nameof(bookToDelete), $"Book with id={bookId} doesn't exist");
             }
 
-            await _bookRepository.Delete(bookToDelete);
+            await _bookRepositoryAdo.DeleteAsync(bookToDelete);
         }
 
-        public async Task<BookDTO> GetBookById(int bookId) //TODO how to take all needed data
+        public async Task<BookDTO> GetBookByIdAsync(int bookId)
         {
-            var book = await _bookRepository.GetById(bookId);
+            var book = await _bookRepository.GetByIdAsync(bookId); // TODO What a fuck with include
 
             if (book == null)
             {
@@ -58,16 +92,16 @@ namespace Bookstore.BLL.Services
             return result;
         }
 
-        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthor(int authorId)
+        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(int authorId)
         {
-            var author = await _authorRepository.GetById(authorId);
+            var author = await _authorRepository.GetByIdAsync(authorId);
 
             if (author == null)
             {
                 throw new ArgumentNullException(nameof(author), $"Author with id={authorId} doesn't exist");
             }
 
-            return await _bookRepository.GetBooksByAuthor(author);
+            return await _bookRepositoryAdo.GetBooksByAuthorAsync(author);
         }
     }
 }

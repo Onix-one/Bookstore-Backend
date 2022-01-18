@@ -1,16 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Bookstore.BLL.Interfaces;
+﻿using AutoMapper;
 using Bookstore.BLL.Services;
 using Bookstore.Core.Models.Entities;
 using Bookstore.Core.Models.ModelsDTO;
 using Bookstore.Core.Models.ModelsDTO.AuthorModels;
-using Swashbuckle.AspNetCore.Annotations;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Bookstore.Backend.Controllers
 {
@@ -30,16 +25,16 @@ namespace Bookstore.Backend.Controllers
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] CreateNewAuthorModel author)
         {
-            var newAuthor = _mapper.Map<Author>(author); // TODO how to map from typeID to List
-            await _authorService.CreateNewAuthor(newAuthor);
-            return Ok(); //TODO but what to do if exeption
+            var newAuthor = _mapper.Map<Author>(author);
+            await _authorService.CreateNewAuthorAsync(newAuthor);
+            return Ok();
         }
 
         [HttpPost]
         public async Task<ActionResult> Edit([FromBody] AuthorDTO author)
         {
             var newAuthor = _mapper.Map<Author>(author);
-            await _authorService.EditAuthor(newAuthor);
+            await _authorService.EditAuthorAsync(newAuthor);
 
             return Ok();
         }
@@ -47,22 +42,26 @@ namespace Bookstore.Backend.Controllers
         [HttpDelete]
         public async Task<ActionResult> Delete(int authorId)
         {
-            await _authorService.DeleteAuthor(authorId);
+            await _authorService.DeleteAuthorAsync(authorId);
 
             return Ok();
         }
 
+        /// <summary>
+        /// Get all authors without books and genres
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<AuthorDTO>> GetAll()
+        public async Task<ActionResult<AuthorDTO>> GetAll() 
         {
-           var result =  await _authorService.GetAllAuthors();
+            var result = await _authorService.GetAllAuthorsAsync();
 
-           if (result.Any())
-           {
-               return Ok(result);
-           }
+            if (result.Any())
+            {
+                return Ok(result);
+            }
 
-           return BadRequest(result); //TODO dont like
+            return BadRequest(result);
         }
     }
 }

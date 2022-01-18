@@ -33,7 +33,7 @@ namespace Bookstore.DAL.EF.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
-                    Summary = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -54,33 +54,17 @@ namespace Bookstore.DAL.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExchangeRates",
+                name: "GenresOfBooks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TypeCurrency = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Rate = table.Column<double>(type: "float", nullable: false),
-                    Abbreviation = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ExchangeRates", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TypeOfBooks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Genre = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TypeOfBooks", x => x.Id);
+                    table.PrimaryKey("PK_GenresOfBooks", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -114,7 +98,7 @@ namespace Bookstore.DAL.EF.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    BookId = table.Column<int>(type: "int", nullable: false)
+                    BookId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -124,7 +108,7 @@ namespace Bookstore.DAL.EF.Migrations
                         column: x => x.BookId,
                         principalTable: "Books",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -156,11 +140,11 @@ namespace Bookstore.DAL.EF.Migrations
                 columns: table => new
                 {
                     BooksReadyToBuyId = table.Column<int>(type: "int", nullable: false),
-                    ReadyToPayId = table.Column<int>(type: "int", nullable: false)
+                    CustomersWantedToBuyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookCustomer1", x => new { x.BooksReadyToBuyId, x.ReadyToPayId });
+                    table.PrimaryKey("PK_BookCustomer1", x => new { x.BooksReadyToBuyId, x.CustomersWantedToBuyId });
                     table.ForeignKey(
                         name: "FK_BookCustomer1_Books_BooksReadyToBuyId",
                         column: x => x.BooksReadyToBuyId,
@@ -168,8 +152,8 @@ namespace Bookstore.DAL.EF.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookCustomer1_Customers_ReadyToPayId",
-                        column: x => x.ReadyToPayId,
+                        name: "FK_BookCustomer1_Customers_CustomersWantedToBuyId",
+                        column: x => x.CustomersWantedToBuyId,
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -200,73 +184,73 @@ namespace Bookstore.DAL.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AuthorTypeOfBook",
+                name: "AuthorGenreOfBook",
                 columns: table => new
                 {
                     AuthorsId = table.Column<int>(type: "int", nullable: false),
-                    TypesOfBooksId = table.Column<int>(type: "int", nullable: false)
+                    GenresOfBooksId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AuthorTypeOfBook", x => new { x.AuthorsId, x.TypesOfBooksId });
+                    table.PrimaryKey("PK_AuthorGenreOfBook", x => new { x.AuthorsId, x.GenresOfBooksId });
                     table.ForeignKey(
-                        name: "FK_AuthorTypeOfBook_Authors_AuthorsId",
+                        name: "FK_AuthorGenreOfBook_Authors_AuthorsId",
                         column: x => x.AuthorsId,
                         principalTable: "Authors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AuthorTypeOfBook_TypeOfBooks_TypesOfBooksId",
-                        column: x => x.TypesOfBooksId,
-                        principalTable: "TypeOfBooks",
+                        name: "FK_AuthorGenreOfBook_GenresOfBooks_GenresOfBooksId",
+                        column: x => x.GenresOfBooksId,
+                        principalTable: "GenresOfBooks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "BookTypeOfBook",
+                name: "BookGenreOfBook",
                 columns: table => new
                 {
                     BooksId = table.Column<int>(type: "int", nullable: false),
-                    TypesOfBookId = table.Column<int>(type: "int", nullable: false)
+                    GenresOfBookId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BookTypeOfBook", x => new { x.BooksId, x.TypesOfBookId });
+                    table.PrimaryKey("PK_BookGenreOfBook", x => new { x.BooksId, x.GenresOfBookId });
                     table.ForeignKey(
-                        name: "FK_BookTypeOfBook_Books_BooksId",
+                        name: "FK_BookGenreOfBook_Books_BooksId",
                         column: x => x.BooksId,
                         principalTable: "Books",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BookTypeOfBook_TypeOfBooks_TypesOfBookId",
-                        column: x => x.TypesOfBookId,
-                        principalTable: "TypeOfBooks",
+                        name: "FK_BookGenreOfBook_GenresOfBooks_GenresOfBookId",
+                        column: x => x.GenresOfBookId,
+                        principalTable: "GenresOfBooks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "CustomerTypeOfBook",
+                name: "CustomerGenreOfBook",
                 columns: table => new
                 {
-                    FansOfTypesId = table.Column<int>(type: "int", nullable: false),
+                    FansOfGenresId = table.Column<int>(type: "int", nullable: false),
                     FavoriteTypesId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CustomerTypeOfBook", x => new { x.FansOfTypesId, x.FavoriteTypesId });
+                    table.PrimaryKey("PK_CustomerGenreOfBook", x => new { x.FansOfGenresId, x.FavoriteTypesId });
                     table.ForeignKey(
-                        name: "FK_CustomerTypeOfBook_Customers_FansOfTypesId",
-                        column: x => x.FansOfTypesId,
+                        name: "FK_CustomerGenreOfBook_Customers_FansOfGenresId",
+                        column: x => x.FansOfGenresId,
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CustomerTypeOfBook_TypeOfBooks_FavoriteTypesId",
+                        name: "FK_CustomerGenreOfBook_GenresOfBooks_FavoriteTypesId",
                         column: x => x.FavoriteTypesId,
-                        principalTable: "TypeOfBooks",
+                        principalTable: "GenresOfBooks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -277,9 +261,9 @@ namespace Bookstore.DAL.EF.Migrations
                 column: "BooksId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AuthorTypeOfBook_TypesOfBooksId",
-                table: "AuthorTypeOfBook",
-                column: "TypesOfBooksId");
+                name: "IX_AuthorGenreOfBook_GenresOfBooksId",
+                table: "AuthorGenreOfBook",
+                column: "GenresOfBooksId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookCustomer_BuyersId",
@@ -287,9 +271,9 @@ namespace Bookstore.DAL.EF.Migrations
                 column: "BuyersId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookCustomer1_ReadyToPayId",
+                name: "IX_BookCustomer1_CustomersWantedToBuyId",
                 table: "BookCustomer1",
-                column: "ReadyToPayId");
+                column: "CustomersWantedToBuyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BookCustomer2_FavoriteBooksId",
@@ -297,18 +281,18 @@ namespace Bookstore.DAL.EF.Migrations
                 column: "FavoriteBooksId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BookGenreOfBook_GenresOfBookId",
+                table: "BookGenreOfBook",
+                column: "GenresOfBookId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BookImages_BookId",
                 table: "BookImages",
                 column: "BookId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BookTypeOfBook_TypesOfBookId",
-                table: "BookTypeOfBook",
-                column: "TypesOfBookId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CustomerTypeOfBook_FavoriteTypesId",
-                table: "CustomerTypeOfBook",
+                name: "IX_CustomerGenreOfBook_FavoriteTypesId",
+                table: "CustomerGenreOfBook",
                 column: "FavoriteTypesId");
         }
 
@@ -318,7 +302,7 @@ namespace Bookstore.DAL.EF.Migrations
                 name: "AuthorBook");
 
             migrationBuilder.DropTable(
-                name: "AuthorTypeOfBook");
+                name: "AuthorGenreOfBook");
 
             migrationBuilder.DropTable(
                 name: "BookCustomer");
@@ -330,16 +314,13 @@ namespace Bookstore.DAL.EF.Migrations
                 name: "BookCustomer2");
 
             migrationBuilder.DropTable(
+                name: "BookGenreOfBook");
+
+            migrationBuilder.DropTable(
                 name: "BookImages");
 
             migrationBuilder.DropTable(
-                name: "BookTypeOfBook");
-
-            migrationBuilder.DropTable(
-                name: "CustomerTypeOfBook");
-
-            migrationBuilder.DropTable(
-                name: "ExchangeRates");
+                name: "CustomerGenreOfBook");
 
             migrationBuilder.DropTable(
                 name: "Authors");
@@ -351,7 +332,7 @@ namespace Bookstore.DAL.EF.Migrations
                 name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "TypeOfBooks");
+                name: "GenresOfBooks");
         }
     }
 }

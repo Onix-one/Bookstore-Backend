@@ -2,7 +2,7 @@
 GO
 
 SET IDENTITY_INSERT [dbo].[Books] ON
-INSERT INTO [dbo].[Books] ([Id],[Name], [Rating], [Price], [Summary]) 
+INSERT INTO [dbo].[Books] ([Id],[Name], [Rating], [Price], [Description]) 
 	VALUES (1,'First book', 4,20, 'Horror story'),
 		   (2,'Second book', 3,5, 'Interesting book'),
 		    (3,'Third book', 3,25, 'Sad story'),
@@ -13,13 +13,13 @@ INSERT INTO [dbo].[Books] ([Id],[Name], [Rating], [Price], [Summary])
 SET IDENTITY_INSERT [dbo].[Books] OFF
 GO
 
-SET IDENTITY_INSERT [dbo].[TypeOfBooks] ON
-INSERT INTO [dbo].[TypeOfBooks] ( [Id], [Type], [Description])
+SET IDENTITY_INSERT [dbo].[GenresOfBooks] ON
+INSERT INTO [dbo].[GenresOfBooks] ( [Id], [Genre], [Description])
 	VALUES (1,1,'for adult'),
 			(2,2,'intresting'),
 			(3,3,'lovely'),
 			(4,4,'nothing')
-SET IDENTITY_INSERT [dbo].[TypeOfBooks] OFF
+SET IDENTITY_INSERT [dbo].[GenresOfBooks] OFF
 GO
 
 SET IDENTITY_INSERT [dbo].[Authors] ON
@@ -30,7 +30,7 @@ INSERT INTO [dbo].[Authors] ([Id],[FirstName], [SecondName], [DateOfBirth], [Bio
 SET IDENTITY_INSERT [dbo].[Authors] OFF
 GO
 
-INSERT INTO [dbo].[BookTypeOfBook] ([BooksId], [TypesOfBookId])
+INSERT INTO [dbo].[BookGenreOfBook] ([BooksId], [GenresOfBookId])
 		VALUES (1,2),
 		(2,1),
 		(3,3),

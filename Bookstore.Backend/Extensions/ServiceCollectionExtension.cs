@@ -5,7 +5,6 @@ using Bookstore.BLL.Services;
 using Bookstore.DAL.ADO.Repositories;
 using Bookstore.DAL.ADO.Repositories.Interfaces;
 using Bookstore.DAL.EF.Repositories;
-using Bookstore.DAL.EF.Repositories.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
@@ -35,15 +34,17 @@ namespace Bookstore.Backend.Extensions
             services.AddTransient<IBookService, BookService>();
             services.AddTransient<IBookImageService, BookImageService>();
             services.AddTransient<ICustomerService, CustomerService>();
-            services.AddTransient<ITypeOfBookService, TypeOfBookService>();
+            services.AddTransient<ITypeOfBookService, GenreOfBookService>();
         }
         public static void AddRepositories(this IServiceCollection services)
         {
             services.AddTransient<IAuthorRepository, AuthorRepository>();
-            services.AddTransient<IBookRepository, BookRepository>();
+            services.AddTransient<IBookRepositoryAdo, BookRepositoryAdo>();
             services.AddTransient<IBookImageRepository, BookImageRepository>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
-            services.AddTransient<ITypeOfBookRepository, TypeOfBookRepository>();
+            services.AddTransient<IGenreOfBookRepository, GenreOfBookRepository>();
+            services.AddTransient<IBookRepository, BookRepository>();
+
         }
     }
 }

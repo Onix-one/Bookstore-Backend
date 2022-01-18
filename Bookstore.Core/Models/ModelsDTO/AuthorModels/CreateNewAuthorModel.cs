@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bookstore.Core.Models.ModelsDTO.AuthorModels
 {
@@ -19,6 +16,6 @@ namespace Bookstore.Core.Models.ModelsDTO.AuthorModels
         [Required]
         public string Nationality { get; set; }
         [Required]
-        public List<int> TypesOfBookId { get; set; }
+        public List<int> GenresOfBookId { get; set; }
     }
 }

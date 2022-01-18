@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Bookstore.Core.Models.Entities;
 using Bookstore.Core.Models.ModelsDTO;
 using Bookstore.DAL.EF.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Bookstore.BLL.Services
 {
@@ -21,29 +19,37 @@ namespace Bookstore.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task CreateNewAuthor(Author author)
+        public async Task CreateNewAuthorAsync(Author author)
         {
-            await _authorRepository.Save(author);
+            await _authorRepository.SaveAsync(author);
         }
-        public async Task DeleteAuthor(int authorId)
+        public async Task DeleteAuthorAsync(int authorId)
         {
-            var authorToDelete = await _authorRepository.GetById(authorId);
+            var authorToDelete = await _authorRepository.GetByIdAsync(authorId);
 
             if (authorToDelete == null)
             {
                 throw new ArgumentNullException(nameof(authorToDelete), $"Author with id={authorId} doesn't exist");
             }
 
-            await _authorRepository.Delete(authorToDelete);
+            await _authorRepository.DeleteAsync(authorToDelete);
         }
-        public async Task EditAuthor(Author author)
+        public async Task EditAuthorAsync(Author author)
         {
-            await _authorRepository.Save(author);
+            await _authorRepository.SaveAsync(author);
         }
 
-        public async Task<List<AuthorDTO>> GetAllAuthors()
+        public async Task<List<AuthorDTO>> GetAllAuthorsAsync()
         {
-            var authors = await _authorRepository.GetAll(); // TODO what about books and type. Maybe override
+            var authors = await _authorRepository.GetAllAsync(); // TODO what about books and type. Maybe override
+
+            var authorsDto = _mapper.Map<List<AuthorDTO>>(authors);
+
+            return authorsDto;
+        }
+        public async Task<List<AuthorDTO>> GetAllAuthorsWithBooksAsync()
+        {
+            var authors = await _authorRepository.GetAllAsync(); // TODO what about books and type. Maybe override
 
             var authorsDto = _mapper.Map<List<AuthorDTO>>(authors);
 
@@ -53,9 +59,9 @@ namespace Bookstore.BLL.Services
 
     public interface IAuthorService
     {
-        public Task CreateNewAuthor(Author author);
-        public Task DeleteAuthor(int authorId);
-        public Task EditAuthor(Author author);
-        public Task<List<AuthorDTO>> GetAllAuthors();
+        public Task CreateNewAuthorAsync(Author author);
+        public Task DeleteAuthorAsync(int authorId);
+        public Task EditAuthorAsync(Author author);
+        public Task<List<AuthorDTO>> GetAllAuthorsAsync();
     }
 }
