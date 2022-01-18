@@ -53,10 +53,23 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpGet]
-        [SwaggerResponse(200, Type = typeof(List<BooksForAuthorFilter>))]
+        [SwaggerResponse(200, Type = typeof(List<BooksForAuthorFiltr>))]
         public async Task<ActionResult> GetBooksByAuthor(int authorId) // TODO What to return
         {
             var result = await _bookService.GetBooksByAuthorAsync(authorId);
+
+            if (!result.Any())
+            {
+                return BadRequest();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [SwaggerResponse(200, Type = typeof(List<BooksByGenreFiltr>))]
+        public async Task<ActionResult> GetBooksByGenre([FromBody] List<int> genresId) 
+        {
+            var result = await _bookService.GetBooksByGenresAsync(genresId);
 
             if (!result.Any())
             {

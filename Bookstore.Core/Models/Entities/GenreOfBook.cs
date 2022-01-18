@@ -6,8 +6,8 @@ namespace Bookstore.Core.Models.Entities
     {
         public string Genre { get; set; }
         public string Description { get; set; }
-        public virtual List<Book> Books { get; set; }
-        public virtual List<Customer> FansOfGenres { get; set; }
-        public virtual List<Author> Authors { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
+        public virtual ICollection<Customer> FansOfGenres { get; set; }
+        public virtual ICollection<Author> Authors { get; set; }
     }
 }

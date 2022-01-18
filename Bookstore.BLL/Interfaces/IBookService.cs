@@ -9,8 +9,9 @@ namespace Bookstore.BLL.Interfaces
     public interface IBookService
     {
         public Task AddNewBookAsync(CreateNewBookModel book);
-        public Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(int authorId);
+        public Task<List<BooksForAuthorFiltr>> GetBooksByAuthorAsync(int authorId);
         public Task DeleteBookAsync(int bookId);
         public Task<BookDTO> GetBookByIdAsync(int bookId);
+        public Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId);
     }
 }

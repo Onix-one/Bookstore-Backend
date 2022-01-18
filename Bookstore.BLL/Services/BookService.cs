@@ -92,9 +92,9 @@ namespace Bookstore.BLL.Services
             return result;
         }
 
-        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(int authorId)
+        public async Task<List<BooksForAuthorFiltr>> GetBooksByAuthorAsync(int authorId)
         {
-            var author = await _authorRepository.GetByIdAsync(authorId);
+            var author = await _authorRepository.GetByIdAsync(authorId); // Mayby this code Y
 
             if (author == null)
             {
@@ -102,6 +102,10 @@ namespace Bookstore.BLL.Services
             }
 
             return await _bookRepositoryAdo.GetBooksByAuthorAsync(author);
+        }
+        public async Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId)
+        {
+            return await _bookRepositoryAdo.GetBooksByGenresAsync(genresId);
         }
     }
 }
