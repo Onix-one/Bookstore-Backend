@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 using Bookstore.Backend.Extensions;
 using Bookstore.DAL.EF.Context;
 using Microsoft.AspNetCore.Builder;
@@ -26,7 +27,8 @@ namespace Bookstore.Backend
             var connectionString = Configuration.GetConnectionString("bookStore");
             services.AddDbContext<BookStoreDbContext>(x => x.UseSqlServer(connectionString).EnableSensitiveDataLogging());
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddSwagger();
             services.AddMapper();
             services.AddServices();

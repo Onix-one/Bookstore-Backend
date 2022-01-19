@@ -17,8 +17,10 @@ namespace Bookstore.DAL.EF.Repositories
         public async override Task<Book> GetByIdAsync(int id) //TODO get mistake. 
         {
             var result = await _dbSet. Include(x => x.Images)
-                .Include(x => x.Authors )
-                .Include(x => x.GenresOfBook)
+                .Include(x => x.BookAuthors )
+                .ThenInclude(x=>x.Author)
+                .Include(x => x.BookGenreOfBooks)
+                .ThenInclude(x=>x.GenreOfBook)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
             return result;

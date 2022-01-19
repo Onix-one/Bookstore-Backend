@@ -30,16 +30,18 @@ INSERT INTO [dbo].[Authors] ([Id],[FirstName], [SecondName], [DateOfBirth], [Bio
 SET IDENTITY_INSERT [dbo].[Authors] OFF
 GO
 
-INSERT INTO [dbo].[BookGenreOfBook] ([BooksId], [GenresOfBookId])
-		VALUES (1,2),
-		(2,1),
-		(3,3),
-		(4,4),
-		(3,1),
-		(5,2)
+
+INSERT INTO [dbo].[BookGenreOfBook] ([BookId], [GenreOfBookId],[Id])
+		VALUES (1,2,11),
+		(2,1,2),
+		(3,3,3),
+		(4,4,4),
+		(3,1,5),
+		(5,2,6)
+
 GO
 
-INSERT INTO [dbo].[AuthorBook] ([AuthorsId], [BooksId])
+INSERT INTO [dbo].[BookAuthor] ([AuthorId], [BookId])
 		VALUES (1,1),
 		(2,2),
 		(3,3),

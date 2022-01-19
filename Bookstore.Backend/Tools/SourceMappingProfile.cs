@@ -12,7 +12,7 @@ namespace Bookstore.Backend.Tools
         {
             CreateMap<int, GenreOfBook>().ForMember(dest => dest.Id, m => m.MapFrom(src => src));
             CreateMap<CreateNewAuthorModel, Author>() // TODO this is test variant
-                .ForMember(nameof(Author.GenresOfBooks),
+                .ForMember(nameof(Author.GenreOfBooks),
                     config => config.MapFrom(src => src.GenresOfBookId));
 
             CreateMap<Author, AuthorDTO>().ReverseMap();

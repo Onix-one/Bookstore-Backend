@@ -60,7 +60,7 @@ namespace Bookstore.BLL.Services
             var newBook = _mapper.Map<Book>(book);
 
             newBook.Authors = authors;
-            newBook.GenresOfBook = genres;
+            newBook.GenreOfBooks = genres;
             newBook.Images = images;
 
             await _bookRepositoryAdo.SaveAsync(newBook);

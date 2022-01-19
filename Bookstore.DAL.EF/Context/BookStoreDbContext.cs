@@ -1,4 +1,5 @@
-﻿using Bookstore.Core.Models.Entities;
+﻿using System.Collections.Generic;
+using Bookstore.Core.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.DAL.EF.Context
@@ -19,13 +20,57 @@ namespace Bookstore.DAL.EF.Context
         {
             base.OnModelCreating(modelBuilder);
 
+            //modelBuilder.Entity<Post>()
+            //    .HasMany(p => p.Tags)
+            //    .WithMany(p => p.Posts)
+            //    .UsingEntity<Dictionary<string, object>>(
+            //        "PostTag",
+            //        j => j
+            //            .HasOne<Tag>()
+            //            .WithMany()
+            //            .HasForeignKey("TagId")
+            //            .HasConstraintName("FK_PostTag_Tags_TagId")
+            //            .OnDelete(DeleteBehavior.Cascade),
+            //        j => j
+            //            .HasOne<Post>()
+            //            .WithMany()
+            //            .HasForeignKey("PostId")
+            //            .HasConstraintName("FK_PostTag_Posts_PostId")
+            //            .OnDelete(DeleteBehavior.ClientCascade));
+
             modelBuilder.Entity<Book>()
-                .HasMany(x => x.GenresOfBook)
-                .WithMany(x => x.Books);
+                .HasMany(x => x.GenreOfBooks)
+                .WithMany(x => x.Books)
+                .UsingEntity<BookGenreOfBook>(
+                    j => j
+                        .HasOne(x => x.GenreOfBook)
+                        .WithMany(x => x.BookGenreOfBooks)
+                        .HasForeignKey(x => x.GenreOfBookId),
+                    j => j
+                        .HasOne(x => x.Book)
+                        .WithMany(x => x.BookGenreOfBooks)
+                        .HasForeignKey(x => x.BookId),
+            j =>
+            {
+                j.HasKey(t => new { t.BookId, t.GenreOfBookId });
+            });
 
             modelBuilder.Entity<Book>()
                 .HasMany(x => x.Authors)
-                .WithMany(x => x.Books);
+                .WithMany(x => x.Books)
+                .UsingEntity<BookAuthor>(
+                    j => j
+                        .HasOne(x => x.Author)
+                        .WithMany(x => x.BookAuthors)
+                        .HasForeignKey(x => x.AuthorId),
+                    j => j
+                        .HasOne(x => x.Book)
+                        .WithMany(x => x.BookAuthors)
+                        .HasForeignKey(x => x.BookId),
+                    j =>
+                    {
+                        j.HasKey(t => new { t.BookId, t.AuthorId });
+                    });
 
             modelBuilder.Entity<Book>()
                 .HasMany(x => x.Buyers)
@@ -44,12 +89,55 @@ namespace Bookstore.DAL.EF.Context
                 .WithMany(x => x.FansOfGenres);
 
             modelBuilder.Entity<Author>()
-                .HasMany(x => x.GenresOfBooks)
-                .WithMany(x => x.Authors);
+                .HasMany(x => x.GenreOfBooks)
+                .WithMany(x => x.Authors)
+                .UsingEntity<AuthorGenreOfBook>(
+                    j => j
+                        .HasOne(x => x.GenreOfBook)
+                        .WithMany(x => x.AuthorGenreOfBooks)
+                        .HasForeignKey(x => x.GenreOfBookId),
+                    j => j
+                        .HasOne(x => x.Author)
+                        .WithMany(x => x.AuthorGenreOfBooks)
+                        .HasForeignKey(x => x.AuthorId),
+                    j =>
+                    {
+                        j.HasKey(t => new { t.GenreOfBookId, t.AuthorId });
+                    });
 
             modelBuilder.Entity<Book>()
                 .HasMany(x => x.Images)
                 .WithOne(x => x.Book);
+
+            //modelBuilder.Entity<BookAuthor>()
+            //    .HasOne(pt => pt.Author)
+            //    .WithMany(p => p.BookAuthors)
+            //    .HasForeignKey(pt => pt.AuthorId);
+
+            //modelBuilder.Entity<BookAuthor>()
+            //    .HasOne(pt => pt.Book)
+            //    .WithMany(t => t.BookAuthors)
+            //    .HasForeignKey(pt => pt.BookId);
+
+            //modelBuilder.Entity<AuthorGenreOfBook>()
+            //    .HasOne(pt => pt.Author)
+            //    .WithMany(p => p.AuthorGenreOfBooks)
+            //    .HasForeignKey(pt => pt.AuthorId);
+
+            //modelBuilder.Entity<AuthorGenreOfBook>()
+            //    .HasOne(pt => pt.GenreOfBook)
+            //    .WithMany(t => t.AuthorGenreOfBooks)
+            //    .HasForeignKey(pt => pt.GenreOfBookId);
+
+            //modelBuilder.Entity<BookGenreOfBook>()
+            //    .HasOne(pt => pt.Book)
+            //    .WithMany(p => p.BookGenreOfBooks)
+            //    .HasForeignKey(pt => pt.BookId);
+
+            //modelBuilder.Entity<BookGenreOfBook>()
+            //    .HasOne(pt => pt.GenreOfBook)
+            //    .WithMany(t => t.BookGenreOfBooks)
+            //    .HasForeignKey(pt => pt.GenreOfBookId);
         }
     }
 }

@@ -10,7 +10,9 @@ namespace Bookstore.Core.Models.Entities
         public DateTime DateOfBirth { get; set; }
         public string Biografy { get; set; }
         public string Nationality { get; set; }
+        public virtual List<BookAuthor> BookAuthors { get; set; }
         public virtual ICollection<Book> Books { get; set; }
-        public virtual ICollection<GenreOfBook> GenresOfBooks { get; set; }
+        public virtual List<AuthorGenreOfBook> AuthorGenreOfBooks { get; set; }
+        public virtual ICollection<GenreOfBook> GenreOfBooks { get; set; }
     }
 }
