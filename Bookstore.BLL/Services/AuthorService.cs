@@ -39,6 +39,13 @@ namespace Bookstore.BLL.Services
             await _authorRepository.SaveAsync(author);
         }
 
+        public async Task<AuthorDTO> GetAuthorByIdAsync(int authorId)
+        {
+           var author =  await _authorRepository.GetByIdAsync(authorId);
+
+           return _mapper.Map<AuthorDTO>(author);
+        }
+
         public async Task<List<AuthorDTO>> GetAllAuthorsAsync()
         {
             var authors = await _authorRepository.GetAllAsync(); // TODO what about books and type. Maybe override
@@ -63,5 +70,6 @@ namespace Bookstore.BLL.Services
         public Task DeleteAuthorAsync(int authorId);
         public Task EditAuthorAsync(Author author);
         public Task<List<AuthorDTO>> GetAllAuthorsAsync();
+        public Task<AuthorDTO> GetAuthorByIdAsync(int authorId);
     }
 }

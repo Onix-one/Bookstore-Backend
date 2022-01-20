@@ -20,6 +20,8 @@ namespace Bookstore.Backend.Tools
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<Book, BookDTO>().ReverseMap();
             CreateMap<CreateNewBookModel, Book>().ReverseMap();
+            CreateMap<AuthorDTO, Author>().ReverseMap();
+            
         }
     }
 }

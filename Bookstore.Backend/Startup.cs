@@ -25,9 +25,10 @@ namespace Bookstore.Backend
         public void ConfigureServices(IServiceCollection services)
         {
             var connectionString = Configuration.GetConnectionString("bookStore");
-            services.AddDbContext<BookStoreDbContext>(x => x.UseSqlServer(connectionString).EnableSensitiveDataLogging());
+            services.AddDbContext<BookStoreDbContext>(x => x.UseLazyLoadingProxies().UseSqlServer(connectionString).EnableSensitiveDataLogging());
 
-            services.AddControllers().AddJsonOptions(x =>
+            services.AddControllers()
+                .AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddSwagger();
             services.AddMapper();

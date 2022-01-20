@@ -71,7 +71,7 @@
     <Build Include="dbo\Tables\Books.sql" />
     <Build Include="dbo\Tables\Customers.sql" />
     <Build Include="dbo\Tables\GenresOfBooks.sql" />
-    <Build Include="dbo\Tables\BookAuthor.sql" />
+    <Build Include="dbo\Tables\AuthorBook.sql" />
     <Build Include="dbo\Tables\BookImages.sql" />
     <Build Include="dbo\Tables\BookCustomer.sql" />
     <Build Include="dbo\Tables\BookCustomer1.sql" />
