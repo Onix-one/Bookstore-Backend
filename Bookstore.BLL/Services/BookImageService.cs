@@ -29,7 +29,12 @@ namespace Bookstore.BLL.Services
 
             await _bookImageRepository.DeleteAsync(bookImageDelete);
         }
-        public async Task<List<BookImage>> ConvertIFormFileToListOfBookImagesAsync(List<IFormFile> files)
+        /// <summary>
+        /// This Method is not used now. Will used for avatars images
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public async Task<List<BookImage>> ConvertIFormFileToListOfBookImagesAsync(List<IFormFile> files) 
         {
             var images = new List<BookImage>();
 
@@ -40,7 +45,7 @@ namespace Bookstore.BLL.Services
                     await image.CopyToAsync(ms);
                     var fileBytes = ms.ToArray();
 
-                    images.Add(new BookImage { Image = fileBytes });
+                    images.Add(new BookImage { });
                 }
             }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Threading.Tasks;
 using Bookstore.Core.Models.Entities;
@@ -21,7 +22,7 @@ namespace Bookstore.DAL.ADO.Repositories
         {
         }
 
-        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(Author author)
+        public async Task<List<BooksForAuthorFiltr>> GetBooksByAuthorAsync(Author author)
         {
             var sqlExpression = string.Format($"SELECT Books.Id,Books.Rating, Books.Name, Books.Price,Books.Description, GenresOfBooks.Id, GenresOfBooks.Genre,BookImages.Id,BookImages.Image" +
                                               "FROM Authors" +
@@ -30,7 +31,7 @@ namespace Bookstore.DAL.ADO.Repositories
                                               "JOIN BookImages ON BookImages.BookId =Books.Id " +
                                               "JOIN BookTypeOfBook ON BookTypeOfBook.BooksId =Books.Id " +
                                               "JOIN GenresOfBooks ON BookTypeOfBook.GenresOfBookId =GenresOfBooks.Id ");
-            List<BooksForAuthorFilter> result = new List<BooksForAuthorFilter>();
+            List<BooksForAuthorFiltr> result = new List<BooksForAuthorFiltr>();
             using (var connection = new SqlConnection(connectionString)) // TODO DI pass sqlConnection
             {
                 connection.Open();
@@ -45,7 +46,7 @@ namespace Bookstore.DAL.ADO.Repositories
                     //reader.NextResult();
                     while (await reader.ReadAsync())
                     {
-                        var book = new BooksForAuthorFilter();
+                        var book = new BooksForAuthorFiltr();
                         book.Id = await reader.ReadInt("Id");
                         book.Name = await reader.ReadString("Name");
                         book.Rating = await reader.ReadInt("Rating");
@@ -53,7 +54,7 @@ namespace Bookstore.DAL.ADO.Repositories
 
                         var typeOfbook = new GenreOfBookForAuthorFiltr();
                         typeOfbook.Id = await reader.ReadInt("Id");
-                        //typeOfbook.Genre = await reader.ReadInt("Genre");  // TODO 1. What about enum in database. 2. How to Map
+                        //typeOfbook.Genre = await reader.ReadInt("Genre");  //
                         book.GenresOfBook.Add(typeOfbook);
                         result.Add(book);
                     }
@@ -65,6 +66,11 @@ namespace Bookstore.DAL.ADO.Repositories
                 await connection.CloseAsync();
                 return result;
             }
+        }
+
+        public async Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId) // Another model to return
+        {
+            throw new Exception();
         }
     }
 }

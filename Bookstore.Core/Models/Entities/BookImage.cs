@@ -2,7 +2,7 @@
 {
     public class BookImage : BaseModel
     {
-        public byte[] Image { get; set; }
+        public string ImageUrl { get; set; }
         public virtual Book Book { get; set; }
     }
 }

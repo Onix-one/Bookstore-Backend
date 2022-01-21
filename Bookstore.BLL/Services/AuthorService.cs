@@ -13,7 +13,8 @@ namespace Bookstore.BLL.Services
         private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
 
-        public AuthorService(IAuthorRepository authorRepository, IMapper mapper)
+        public AuthorService(IAuthorRepository authorRepository,
+            IMapper mapper)
         {
             _authorRepository = authorRepository;
             _mapper = mapper;
@@ -37,6 +38,13 @@ namespace Bookstore.BLL.Services
         public async Task EditAuthorAsync(Author author)
         {
             await _authorRepository.SaveAsync(author);
+        }
+
+        public async Task<AuthorDTO> GetAuthorByIdAsync(int authorId)
+        {
+            var author = await _authorRepository.GetByIdAsync(authorId);
+
+            return _mapper.Map<AuthorDTO>(author);
         }
 
         public async Task<List<AuthorDTO>> GetAllAuthorsAsync()
@@ -63,5 +71,6 @@ namespace Bookstore.BLL.Services
         public Task DeleteAuthorAsync(int authorId);
         public Task EditAuthorAsync(Author author);
         public Task<List<AuthorDTO>> GetAllAuthorsAsync();
+        public Task<AuthorDTO> GetAuthorByIdAsync(int authorId);
     }
 }

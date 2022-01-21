@@ -8,8 +8,4 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.13" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\ModelsDTO\TypeOfBookModel\" />
-  </ItemGroup>
-
 </Project>

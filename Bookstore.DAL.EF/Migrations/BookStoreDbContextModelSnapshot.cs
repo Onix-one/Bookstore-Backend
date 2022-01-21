@@ -39,12 +39,12 @@ namespace Bookstore.DAL.EF.Migrations
                     b.Property<int>("AuthorsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GenresOfBooksId")
+                    b.Property<int>("GenreOfBooksId")
                         .HasColumnType("int");
 
-                    b.HasKey("AuthorsId", "GenresOfBooksId");
+                    b.HasKey("AuthorsId", "GenreOfBooksId");
 
-                    b.HasIndex("GenresOfBooksId");
+                    b.HasIndex("GenreOfBooksId");
 
                     b.ToTable("AuthorGenreOfBook");
                 });
@@ -99,12 +99,12 @@ namespace Bookstore.DAL.EF.Migrations
                     b.Property<int>("BooksId")
                         .HasColumnType("int");
 
-                    b.Property<int>("GenresOfBookId")
+                    b.Property<int>("GenreOfBooksId")
                         .HasColumnType("int");
 
-                    b.HasKey("BooksId", "GenresOfBookId");
+                    b.HasKey("BooksId", "GenreOfBooksId");
 
-                    b.HasIndex("GenresOfBookId");
+                    b.HasIndex("GenreOfBooksId");
 
                     b.ToTable("BookGenreOfBook");
                 });
@@ -143,6 +143,9 @@ namespace Bookstore.DAL.EF.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("BookUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -170,8 +173,8 @@ namespace Bookstore.DAL.EF.Migrations
                     b.Property<int?>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("varbinary(max)");
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -253,7 +256,7 @@ namespace Bookstore.DAL.EF.Migrations
 
                     b.HasOne("Bookstore.Core.Models.Entities.GenreOfBook", null)
                         .WithMany()
-                        .HasForeignKey("GenresOfBooksId")
+                        .HasForeignKey("GenreOfBooksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -313,7 +316,7 @@ namespace Bookstore.DAL.EF.Migrations
 
                     b.HasOne("Bookstore.Core.Models.Entities.GenreOfBook", null)
                         .WithMany()
-                        .HasForeignKey("GenresOfBookId")
+                        .HasForeignKey("GenreOfBooksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -321,7 +324,7 @@ namespace Bookstore.DAL.EF.Migrations
             modelBuilder.Entity("Bookstore.Core.Models.Entities.BookImage", b =>
                 {
                     b.HasOne("Bookstore.Core.Models.Entities.Book", "Book")
-                        .WithMany("ImageFiles")
+                        .WithMany("Images")
                         .HasForeignKey("BookId");
 
                     b.Navigation("Book");
@@ -344,7 +347,7 @@ namespace Bookstore.DAL.EF.Migrations
 
             modelBuilder.Entity("Bookstore.Core.Models.Entities.Book", b =>
                 {
-                    b.Navigation("ImageFiles");
+                    b.Navigation("Images");
                 });
 #pragma warning restore 612, 618
         }

@@ -30,7 +30,8 @@ INSERT INTO [dbo].[Authors] ([Id],[FirstName], [SecondName], [DateOfBirth], [Bio
 SET IDENTITY_INSERT [dbo].[Authors] OFF
 GO
 
-INSERT INTO [dbo].[BookGenreOfBook] ([BooksId], [GenresOfBookId])
+
+INSERT INTO [dbo].[BookGenreOfBook] ([BooksId], [GenreOfBooksId])
 		VALUES (1,2),
 		(2,1),
 		(3,3),
@@ -47,26 +48,34 @@ INSERT INTO [dbo].[AuthorBook] ([AuthorsId], [BooksId])
 		(2,5)
 GO
 
-SET IDENTITY_INSERT [dbo].[Customers] ON
-INSERT INTO [dbo].[Customers] ([Id],[Bonuses])
-		VALUES (1,0),
-		(2,25),
-		(3,0),
-		(4,5),
-		(5,3)
-SET IDENTITY_INSERT [dbo].[Customers] OFF
-GO
-
-INSERT INTO [dbo].[BookCustomer] ([BroughtBooksId], [BuyersId])
+INSERT INTO [dbo].[AuthorGenreOfBook] ([AuthorsId], [GenreOfBooksId])
 		VALUES (1,1),
 		(2,2),
 		(3,3),
 		(3,4),
-		(2,5)
+		(2,1)
 GO
 
+--SET IDENTITY_INSERT [dbo].[Customers] ON
+--INSERT INTO [dbo].[Customers] ([Id],[Bonuses])
+--		VALUES (1,0),
+--		(2,25),
+--		(3,0),
+--		(4,5),
+--		(5,3)
+--SET IDENTITY_INSERT [dbo].[Customers] OFF
+--GO
+
+--INSERT INTO [dbo].[BookCustomer] ([BroughtBooksId], [BuyersId])
+--		VALUES (1,1),
+--		(2,2),
+--		(3,3),
+--		(3,4),
+--		(2,5)
+--GO
+
 SET IDENTITY_INSERT [dbo].[BookImages] ON
-INSERT INTO [dbo].[BookImages] ([Id], [Image], [BookId])
+INSERT INTO [dbo].[BookImages] ([Id], [ImageUrl], [BookId]) 
 		VALUES (1,null,1),
 		(2,null,2),
 		(3,null,3),

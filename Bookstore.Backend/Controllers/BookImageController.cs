@@ -15,7 +15,8 @@ namespace Bookstore.Backend.Controllers
         private readonly IBookImageService _bookImageService;
         private readonly IMapper _mapper;
 
-        public BookImageController(IBookImageService bookImageService, IMapper mapper)
+        public BookImageController(IBookImageService bookImageService,
+            IMapper mapper)
         {
             _bookImageService = bookImageService;
             _mapper = mapper;

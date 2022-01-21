@@ -3,11 +3,11 @@ using Bookstore.BLL.Interfaces;
 using Bookstore.Core.Models.Entities;
 using Bookstore.Core.Models.ModelsDTO;
 using Bookstore.Core.Models.ModelsDTO.BookModels;
-using Bookstore.Core.Models.ModelsDTO.FilterModels;
 using Bookstore.DAL.ADO.Repositories.Interfaces;
 using Bookstore.DAL.EF.Repositories;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Bookstore.BLL.Services
@@ -21,12 +21,15 @@ namespace Bookstore.BLL.Services
         private readonly IBookImageService _bookImageService;
         private readonly IBookImageRepository _bookImageRepository;
         private readonly IGenreOfBookRepository _genreOfBookRepository;
+        private readonly IFileService _fileService;
         public BookService(IBookRepositoryAdo bookRepositoryAdo,
             IMapper mapper,
             IAuthorRepository authorRepository,
             IBookRepository bookRepository,
             IBookImageRepository bookImageRepository,
-            IBookImageService bookImageService, IGenreOfBookRepository genreOfBookRepository)
+            IBookImageService bookImageService,
+            IGenreOfBookRepository genreOfBookRepository,
+            IFileService fileService)
         {
             _bookRepositoryAdo = bookRepositoryAdo;
             _mapper = mapper;
@@ -35,11 +38,12 @@ namespace Bookstore.BLL.Services
             _bookImageRepository = bookImageRepository;
             _bookImageService = bookImageService;
             _genreOfBookRepository = genreOfBookRepository;
+            _fileService = fileService;
         }
 
-        public async Task AddNewBookAsync(CreateNewBookModel book)
+        public async Task AddNewBookAsync(CreateNewBookModel book, string rootPath)
         {
-            var images = await _bookImageService.ConvertIFormFileToListOfBookImagesAsync(book.ImageFiles);
+            //var images = await _bookImageService.ConvertIFormFileToListOfBookImagesAsync(book.ImageFiles);
 
             var genres = new List<GenreOfBook>();
             var authors = new List<Author>();
@@ -56,14 +60,25 @@ namespace Bookstore.BLL.Services
                 authors.Add(author);
             }
 
-
             var newBook = _mapper.Map<Book>(book);
 
             newBook.Authors = authors;
-            newBook.GenresOfBook = genres;
-            newBook.Images = images;
+            newBook.GenreOfBooks = genres;
 
             await _bookRepositoryAdo.SaveAsync(newBook);
+
+            var pathToDirectoryBook = _fileService.CreateNewFolderForBook(rootPath, newBook.Id);
+
+            var fullPath = Path.Combine(pathToDirectoryBook, $"{newBook.Name}{newBook.Id}.pdf");
+
+            // How to check if the boo was create (best variant)
+            await using (var stream = new FileStream(fullPath, FileMode.OpenOrCreate))
+            {
+                await book.book.CopyToAsync(stream);
+            }
+
+            newBook.BookUrl = _fileService.GetBookUrl(newBook.Name, newBook.Id);
+            await _bookRepository.SaveAsync(newBook);
         }
 
         public async Task DeleteBookAsync(int bookId)
@@ -87,12 +102,12 @@ namespace Bookstore.BLL.Services
                 throw new ArgumentNullException(nameof(book), $"Book with id={bookId} doesn't exist");
             }
 
-            var result = _mapper.Map<BookDTO>(book); //TODO not work  
+            var result = _mapper.Map<BookDTO>(book);
 
             return result;
         }
 
-        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(int authorId)
+        public async Task<List<BooksForAuthorFiltr>> GetBooksByAuthorAsync(int authorId)
         {
             var author = await _authorRepository.GetByIdAsync(authorId);
 
@@ -102,6 +117,10 @@ namespace Bookstore.BLL.Services
             }
 
             return await _bookRepositoryAdo.GetBooksByAuthorAsync(author);
+        }
+        public async Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId)
+        {
+            return await _bookRepositoryAdo.GetBooksByGenresAsync(genresId);
         }
     }
 }
