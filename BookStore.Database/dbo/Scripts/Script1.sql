@@ -75,7 +75,7 @@ GO
 --GO
 
 SET IDENTITY_INSERT [dbo].[BookImages] ON
-INSERT INTO [dbo].[BookImages] ([Id], [Image], [BookId])
+INSERT INTO [dbo].[BookImages] ([Id], [ImageUrl], [BookId]) 
 		VALUES (1,null,1),
 		(2,null,2),
 		(3,null,3),

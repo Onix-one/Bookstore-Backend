@@ -3,6 +3,7 @@ using Bookstore.Core.Models.Entities;
 using Bookstore.Core.Models.ModelsDTO;
 using Bookstore.Core.Models.ModelsDTO.AuthorModels;
 using Bookstore.Core.Models.ModelsDTO.BookModels;
+using Bookstore.Core.Models.ModelsDTO.GenreOfBookModel;
 
 namespace Bookstore.Backend.Tools
 {
@@ -21,6 +22,8 @@ namespace Bookstore.Backend.Tools
             CreateMap<Book, BookDTO>().ReverseMap();
             CreateMap<CreateNewBookModel, Book>().ReverseMap();
             CreateMap<AuthorDTO, Author>().ReverseMap();
+            CreateMap<CreateNewGenreOfBookModel, GenreOfBook>().ReverseMap();
+            CreateMap<GetAllGenreModel, GenreOfBook>().ReverseMap();
             
         }
     }

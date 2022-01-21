@@ -26,7 +26,7 @@ namespace Bookstore.DAL.EF.Repositories
                         new BookImage()
                         {
                             Id = y.Id,
-                            Image = y.Image
+                            
                         }).ToList(),
                     Rating = x.Rating,
                     Authors = x.Authors.Select(y=> 

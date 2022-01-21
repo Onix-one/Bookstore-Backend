@@ -34,7 +34,8 @@ namespace Bookstore.Backend.Extensions
             services.AddTransient<IBookService, BookService>();
             services.AddTransient<IBookImageService, BookImageService>();
             services.AddTransient<ICustomerService, CustomerService>();
-            services.AddTransient<ITypeOfBookService, GenreOfBookService>();
+            services.AddTransient<IGenreOfBookService, GenreOfBookService>();
+            services.AddTransient<IFileService, FileService>();
         }
         public static void AddRepositories(this IServiceCollection services)
         {

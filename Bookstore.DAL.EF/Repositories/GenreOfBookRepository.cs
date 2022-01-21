@@ -1,6 +1,9 @@
-﻿using Bookstore.Core.Models.Entities;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Bookstore.Core.Models.Entities;
 using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.DAL.EF.Repositories
 {
@@ -13,5 +16,6 @@ namespace Bookstore.DAL.EF.Repositories
 
     public interface IGenreOfBookRepository : IBaseRepository<GenreOfBook>
     {
+
     }
 }

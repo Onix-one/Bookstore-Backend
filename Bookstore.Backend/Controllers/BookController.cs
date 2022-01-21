@@ -2,7 +2,7 @@
 using Bookstore.BLL.Interfaces;
 using Bookstore.Core.Models.ModelsDTO;
 using Bookstore.Core.Models.ModelsDTO.BookModels;
-using Bookstore.Core.Models.ModelsDTO.FilterModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
@@ -18,17 +18,22 @@ namespace Bookstore.Backend.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IBookService _bookService;
+        private IWebHostEnvironment _webHostEnvironment { get; set; }
 
-        public BookController(IMapper mapper, IBookService bookService)
+        public BookController(IMapper mapper,
+            IBookService bookService,
+            IWebHostEnvironment webHostEnvironment)
         {
             _mapper = mapper;
             _bookService = bookService;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost]
-        public async Task<ActionResult> CreateBook([FromBody]CreateNewBookModel book) // TODO How to check result
+        public async Task<ActionResult> CreateBook([FromBody] CreateNewBookModel book) // TODO How to check result
         {
-            await _bookService.AddNewBookAsync(book);
+            var rootPath = _webHostEnvironment.WebRootPath;
+            await _bookService.AddNewBookAsync(book, rootPath);
             return Ok();
 
         }
@@ -40,7 +45,7 @@ namespace Bookstore.Backend.Controllers
             return Ok();
         }
 
-        [HttpGet] //TODO Not work / Get with mistake
+        [HttpGet]
         public async Task<ActionResult<BookDTO>> GetBookById(int bookId)
         {
             var result = await _bookService.GetBookByIdAsync(bookId);
@@ -51,6 +56,23 @@ namespace Bookstore.Backend.Controllers
 
             return BadRequest();
         }
+
+        /// <summary>
+        /// Get  without books and genres
+        /// </summary>
+        /// <returns></returns>
+        //[HttpGet]
+        //public async Task<ActionResult<AuthorDTO>> GetAll(int skip, int take)
+        //{
+        //    var result = await _bookService.();
+
+        //    if (result.Any())
+        //    {
+        //        return Ok(result);
+        //    }
+
+        //    return BadRequest(result);
+        //}
 
         [HttpGet]
         [SwaggerResponse(200, Type = typeof(List<BooksForAuthorFiltr>))]
@@ -67,7 +89,7 @@ namespace Bookstore.Backend.Controllers
 
         [HttpGet]
         [SwaggerResponse(200, Type = typeof(List<BooksByGenreFiltr>))]
-        public async Task<ActionResult> GetBooksByGenre([FromBody] List<int> genresId) 
+        public async Task<ActionResult> GetBooksByGenre([FromBody] List<int> genresId)
         {
             var result = await _bookService.GetBooksByGenresAsync(genresId);
 

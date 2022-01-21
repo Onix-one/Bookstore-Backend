@@ -19,7 +19,9 @@ namespace Bookstore.Backend.Controllers
         private readonly IAuthorService _authorService;
         private readonly IGenreOfBookRepository _genreOfBookRepository;
 
-        public AuthorController(IMapper mapper, IAuthorService authorService, IGenreOfBookRepository genreOfBookRepository)
+        public AuthorController(IMapper mapper,
+            IAuthorService authorService,
+            IGenreOfBookRepository genreOfBookRepository)
         {
             _mapper = mapper;
             _authorService = authorService;

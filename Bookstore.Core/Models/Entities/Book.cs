@@ -8,6 +8,7 @@ namespace Bookstore.Core.Models.Entities
         public int Rating { get; set; }
         public double Price { get; set; }
         public string Description { get; set; }
+        public string BookUrl { get; set; }
         public virtual ICollection<GenreOfBook> GenreOfBooks { get; set; }
         public virtual ICollection<Author> Authors { get; set; }
         public virtual ICollection<BookImage> Images { get; set; }
