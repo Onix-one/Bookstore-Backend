@@ -1,4 +1,4 @@
-﻿USE [BookStore]
+﻿USE [bookStore]
 GO
 
 SET IDENTITY_INSERT [dbo].[Books] ON

@@ -8,11 +8,15 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using Bookstore.DAL.EF.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Bookstore.Backend.Controllers
 {
     [Route("api/[controller]/[Action]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerRights")]
     public class AuthorController : ControllerBase
     {
         private readonly IMapper _mapper;

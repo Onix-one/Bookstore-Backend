@@ -31,6 +31,8 @@ namespace Bookstore.Backend
                 .AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddSwagger();
+            services.AddAuthenticationWithJwtToken(Configuration);
+            services.AddAuthorizationWithRole();
             services.AddMapper();
             services.AddServices();
             services.AddRepositories();
@@ -46,10 +48,16 @@ namespace Bookstore.Backend
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookstore.Backend v1"));
             }
 
-            app.UseHttpsRedirection();
-
             app.UseRouting();
 
+            app.UseHttpsRedirection();
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            );
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
