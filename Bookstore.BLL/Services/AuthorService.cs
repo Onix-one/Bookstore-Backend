@@ -5,6 +5,8 @@ using Bookstore.DAL.EF.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bookstore.Core.Models.ModelsDTO.AuthorModels;
+using Bookstore.DAL.ADO.Repositories;
 
 namespace Bookstore.BLL.Services
 {
@@ -12,12 +14,14 @@ namespace Bookstore.BLL.Services
     {
         private readonly IAuthorRepository _authorRepository;
         private readonly IMapper _mapper;
+        private readonly IAuthorRepositoryAdo _authorRepositoryAdo;
 
         public AuthorService(IAuthorRepository authorRepository,
-            IMapper mapper)
+            IMapper mapper, IAuthorRepositoryAdo authorRepositoryAdo)
         {
             _authorRepository = authorRepository;
             _mapper = mapper;
+            _authorRepositoryAdo = authorRepositoryAdo;
         }
 
         public async Task CreateNewAuthorAsync(Author author)
@@ -49,7 +53,7 @@ namespace Bookstore.BLL.Services
 
         public async Task<List<AuthorDTO>> GetAllAuthorsAsync()
         {
-            var authors = await _authorRepository.GetAllAsync(); // TODO what about books and type. Maybe override
+            var authors = await _authorRepository.GetAllAsync();
 
             var authorsDto = _mapper.Map<List<AuthorDTO>>(authors);
 
@@ -57,9 +61,17 @@ namespace Bookstore.BLL.Services
         }
         public async Task<List<AuthorDTO>> GetAllAuthorsWithBooksAsync()
         {
-            var authors = await _authorRepository.GetAllAsync(); // TODO what about books and type. Maybe override
+            var authors = await _authorRepository.GetAllAsync();
 
             var authorsDto = _mapper.Map<List<AuthorDTO>>(authors);
+
+            return authorsDto;
+        }
+        public async Task<List<AuthorNamesAndIdInfo>> GetAllAuthorsNameAndId()
+        {
+            var authors = await _authorRepositoryAdo.GetAllAuthorsNameSurnameIdAsync();
+
+            var authorsDto = _mapper.Map<List<AuthorNamesAndIdInfo>>(authors);
 
             return authorsDto;
         }
@@ -72,5 +84,6 @@ namespace Bookstore.BLL.Services
         public Task EditAuthorAsync(Author author);
         public Task<List<AuthorDTO>> GetAllAuthorsAsync();
         public Task<AuthorDTO> GetAuthorByIdAsync(int authorId);
+        public Task<List<AuthorNamesAndIdInfo>> GetAllAuthorsNameAndId();
     }
 }

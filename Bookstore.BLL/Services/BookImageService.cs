@@ -18,6 +18,11 @@ namespace Bookstore.BLL.Services
             _bookImageRepository = bookImageRepository;
         }
 
+        public async Task CreateBookImageAsync(BookImage bookImage)
+        {
+            await _bookImageRepository.SaveAsync(bookImage);
+        }
+
         public async Task DeleteImageAsync(int imageId)
         {
             var bookImageDelete = await _bookImageRepository.GetByIdAsync(imageId);
@@ -57,5 +62,6 @@ namespace Bookstore.BLL.Services
     {
         public Task DeleteImageAsync(int imageId);
         public Task<List<BookImage>> ConvertIFormFileToListOfBookImagesAsync(List<IFormFile> files);
+        public Task CreateBookImageAsync(BookImage bookImage);
     }
 }

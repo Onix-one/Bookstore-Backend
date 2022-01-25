@@ -2,14 +2,14 @@
 GO
 
 SET IDENTITY_INSERT [dbo].[Books] ON
-INSERT INTO [dbo].[Books] ([Id],[Name], [Rating], [Price], [Description]) 
-	VALUES (1,'First book', 4,20, 'Horror story'),
-		   (2,'Second book', 3,5, 'Interesting book'),
-		    (3,'Third book', 3,25, 'Sad story'),
-			(4,'Fourth book', 5,13, 'Nothing interesting'),
-			(5,'Fifth book', 5,1, 'Cool'),
-			(6,'Sixth book', 4,21, 'Boring'),
-			(7, 'Seventh book', 3,11, 'The best')
+INSERT INTO [dbo].[Books] ([Id],[Name], [Rating], [Price], [Description],BookUrl) 
+	VALUES (1,'First book', 4,20, 'Horror story','Books\1\1.pdf'),
+		   (2,'Second book', 3,5, 'Interesting book',null),
+		    (3,'Third book', 3,25, 'Sad story',null),
+			(4,'Fourth book', 5,13, 'Nothing interesting',null),
+			(5,'Fifth book', 5,1, 'Cool',null),
+			(6,'Sixth book', 4,21, 'Boring',null),
+			(7, 'Seventh book', 3,11, 'The best',null)
 SET IDENTITY_INSERT [dbo].[Books] OFF
 GO
 

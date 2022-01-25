@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bookstore.Core.Models.ModelsDTO.FilterModels;
 
 namespace Bookstore.Backend.Controllers
 {
@@ -37,6 +39,7 @@ namespace Bookstore.Backend.Controllers
             return Ok();
 
         }
+
         [HttpDelete]
         public async Task<ActionResult> DeleteBook(int bookId)
         {
@@ -57,10 +60,14 @@ namespace Bookstore.Backend.Controllers
             return BadRequest();
         }
 
-        /// <summary>
-        /// Get  without books and genres
-        /// </summary>
-        /// <returns></returns>
+        [HttpGet] 
+        public async Task<VirtualFileResult> LoadBook(int bookId)
+        {
+            var book = await _bookService.LoadBook(bookId);
+
+            return File(book.BookUrl, "application/octet-stream", $"{book.Name}.pdf");
+        }
+
         //[HttpGet]
         //public async Task<ActionResult<AuthorDTO>> GetAll(int skip, int take)
         //{
@@ -75,7 +82,7 @@ namespace Bookstore.Backend.Controllers
         //}
 
         [HttpGet]
-        [SwaggerResponse(200, Type = typeof(List<BooksForAuthorFiltr>))]
+        [SwaggerResponse(200, Type = typeof(List<BooksForAuthorFilter>))]
         public async Task<ActionResult> GetBooksByAuthor(int authorId) // TODO What to return
         {
             var result = await _bookService.GetBooksByAuthorAsync(authorId);
@@ -97,6 +104,14 @@ namespace Bookstore.Backend.Controllers
             {
                 return BadRequest();
             }
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<BooksAfterFilterModel>>> GetBooksByFilter([FromQuery] FilterForBookModel conditions)
+        {
+            var result = await _bookService.GetBooksByFilterAsync(conditions);
+
             return Ok(result);
         }
     }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AutoMapper;
 using Bookstore.Core.Models.Entities;
 using Bookstore.Core.Models.ModelsDTO;
@@ -24,7 +25,13 @@ namespace Bookstore.Backend.Tools
             CreateMap<AuthorDTO, Author>().ReverseMap();
             CreateMap<CreateNewGenreOfBookModel, GenreOfBook>().ReverseMap();
             CreateMap<GetAllGenreModel, GenreOfBook>().ReverseMap();
-            
+            CreateMap<LoadBookModel, Book>().ReverseMap();
+            CreateMap<Author, AuthorNamesAndIdInfo>()
+                .ForMember(nameof(AuthorNamesAndIdInfo.FullName),
+                    config => config.MapFrom(src => $"{src.FirstName} {src.SecondName}"));
+            //CreateMap<List<Book>, List<BooksAfterFilterModel>>();
+            CreateMap<Book, BooksAfterFilterModel>();
+
         }
     }
 }

@@ -3,7 +3,7 @@ using Bookstore.Core.Models.ModelsDTO.FilterModels;
 
 namespace Bookstore.Core.Models.ModelsDTO.BookModels
 {
-    public class BooksForAuthorFiltr
+    public class BooksForAuthorFilter
     {
         public int Id { get; set; }
         public string Name { get; set; }

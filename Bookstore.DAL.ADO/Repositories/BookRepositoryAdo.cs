@@ -16,13 +16,12 @@ namespace Bookstore.DAL.ADO.Repositories
     public class BookRepositoryAdo : BaseRepository<Book>, IBookRepositoryAdo
     {
         //TODO How not to harcode
-        string connectionString = @"Data Source=(localdb)\\MSSQLLocalDB;Database=bookStore;Trusted_Connection=True;";
-
+        string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Database=bookStore;Trusted_Connection=True;";
         public BookRepositoryAdo(BookStoreDbContext bookStoreDbContext) : base(bookStoreDbContext)
         {
         }
-
-        public async Task<List<BooksForAuthorFiltr>> GetBooksByAuthorAsync(Author author)
+        //TODO Not worked.
+        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(Author author)
         {
             var sqlExpression = string.Format($"SELECT Books.Id,Books.Rating, Books.Name, Books.Price,Books.Description, GenresOfBooks.Id, GenresOfBooks.Genre,BookImages.Id,BookImages.Image" +
                                               "FROM Authors" +
@@ -31,7 +30,7 @@ namespace Bookstore.DAL.ADO.Repositories
                                               "JOIN BookImages ON BookImages.BookId =Books.Id " +
                                               "JOIN BookTypeOfBook ON BookTypeOfBook.BooksId =Books.Id " +
                                               "JOIN GenresOfBooks ON BookTypeOfBook.GenresOfBookId =GenresOfBooks.Id ");
-            List<BooksForAuthorFiltr> result = new List<BooksForAuthorFiltr>();
+            List<BooksForAuthorFilter> result = new List<BooksForAuthorFilter>();
             using (var connection = new SqlConnection(connectionString)) // TODO DI pass sqlConnection
             {
                 connection.Open();
@@ -46,7 +45,7 @@ namespace Bookstore.DAL.ADO.Repositories
                     //reader.NextResult();
                     while (await reader.ReadAsync())
                     {
-                        var book = new BooksForAuthorFiltr();
+                        var book = new BooksForAuthorFilter();
                         book.Id = await reader.ReadInt("Id");
                         book.Name = await reader.ReadString("Name");
                         book.Rating = await reader.ReadInt("Rating");
@@ -66,6 +65,43 @@ namespace Bookstore.DAL.ADO.Repositories
                 await connection.CloseAsync();
                 return result;
             }
+        }
+
+        public async Task<Book> GetBookUrlAndNameAsync(int bookId) // Another model to return
+        {
+            var book = new Book();
+
+            var sqlExpression = string.Format("SELECT Books.Name, Books.BookUrl" +
+                                              " FROM dbo.Books" +
+                                              " WHERE Books.Id = @BookId");
+
+            await using (var connection = new SqlConnection(connectionString))
+            {
+                await connection.OpenAsync();
+                var command = new SqlCommand(sqlExpression, connection);
+                var nameParametr = new SqlParameter(@"BookId", bookId);
+
+                command.Parameters.Add(nameParametr);
+
+                var reader = await command.ExecuteReaderAsync();
+
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        book.BookUrl = await reader.ReadString("BookUrl");
+                        book.Name = await reader.ReadString("Name");
+                    }
+                }
+                else
+                {
+                    throw new SqlNullValueException();
+                }
+
+                await connection.CloseAsync();
+            }
+
+            return book;
         }
 
         public async Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId) // Another model to return
