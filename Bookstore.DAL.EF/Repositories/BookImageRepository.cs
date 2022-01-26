@@ -3,7 +3,9 @@ using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.DAL.EF.Repositories
 {
@@ -11,16 +13,6 @@ namespace Bookstore.DAL.EF.Repositories
     {
         public BookImageRepository(BookStoreDbContext bookStoreDbContext) : base(bookStoreDbContext)
         {
-        }
-
-        public async Task AddImagesToBookAsync(List<BookImage> images, int bookId)
-        {
-
-        }
-
-        public async Task<List<BookImage>> GetAllImagesByBookIdAsync(int bookId)
-        {
-            throw new Exception();
         }
     }
 

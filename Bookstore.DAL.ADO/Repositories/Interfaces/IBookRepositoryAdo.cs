@@ -9,8 +9,9 @@ namespace Bookstore.DAL.ADO.Repositories.Interfaces
 {
     public interface IBookRepositoryAdo: IBaseRepository<Book>
     {
-        public Task<List<BooksForAuthorFiltr>> GetBooksByAuthorAsync(Author author);
+        public Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(Author author);
 
         public Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId);
+        public Task<Book> GetBookUrlAndNameAsync(int bookId);
     }
 }

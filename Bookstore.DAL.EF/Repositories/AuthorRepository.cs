@@ -13,7 +13,7 @@ namespace Bookstore.DAL.EF.Repositories
         {
         }
 
-        public async override Task<Author> GetByIdAsync(int id)
+        public override async Task<Author> GetByIdAsync(int id)
         {
             var result = await _dbSet.Select(x =>
                 new Author()
@@ -24,14 +24,14 @@ namespace Bookstore.DAL.EF.Repositories
                     FirstName = x.FirstName,
                     SecondName = x.SecondName,
                     Nationality = x.Nationality,
-                    Books = x.Books.Select(y=>
+                    Books = x.Books.Select(y =>
                         new Book()
                         {
                             Id = y.Id,
                             Name = y.Name,
                             Rating = y.Rating
                         }).ToList(),
-                    GenreOfBooks = x.GenreOfBooks.Select(y=> 
+                    GenreOfBooks = x.GenreOfBooks.Select(y =>
                         new GenreOfBook()
                         {
                             Id = y.Id,

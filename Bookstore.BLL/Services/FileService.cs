@@ -1,43 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Bookstore.BLL.Services
 {
     public class FileService : IFileService
     {
-        public string GetBookUrl(string name, int id)
+        public string GetFullPathToBook(string booName, int bookId)
         {
-            var bookUrl = Path.Combine($"{id}", $"{name}{id}.pdf");
-            return bookUrl;
+            return Path.Combine("books", $"{bookId}", $"{booName}#{bookId}.pdf");
         }
 
-        public string GetImageUrl(int bookId , int imageId)
+        public string GetFullPathToImage(string booName, int bookId, int imageId)
         {
-            var imageUrl = Path.Combine($"{bookId}", $"{imageId}.pdf");
-            return imageUrl;
+            return Path.Combine("books", $"{bookId}", $"{booName}#{imageId}.jpg");
         }
 
-        public string CreateNewFolderForBook(string rootPath, int Id)
+        public void CreateNewFolderForBook(string rootPath, int bookId)
         {
-            var fullPath = Path.Combine(rootPath,"Books", Id.ToString());
+            var fullPath = Path.Combine(rootPath, "Books", bookId.ToString());
 
             if (!Directory.Exists(fullPath))
             {
                 Directory.CreateDirectory(fullPath);
             }
+        }
 
-            return fullPath;
+        public async Task SaveFileInFolderAsync(IFormFile file, string fullPath)
+        {
+            await using (var stream = new FileStream(fullPath, FileMode.OpenOrCreate))
+            {
+                await file.CopyToAsync(stream);
+            }
         }
     }
 
     public interface IFileService
     {
-        public string GetBookUrl(string name, int id);
-        public string CreateNewFolderForBook(string rootPath, int Id);
-        public string GetImageUrl(int bookId, int imageId);
+        public void CreateNewFolderForBook(string rootPath, int bookId);
+        public Task SaveFileInFolderAsync(IFormFile file, string fullPath);
+        public string GetFullPathToBook(string booName, int bookId);
+        public string GetFullPathToImage(string booName, int bookId, int imageId);
     }
 }

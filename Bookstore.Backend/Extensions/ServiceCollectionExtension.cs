@@ -7,8 +7,10 @@ using Bookstore.BLL.Interfaces;
 using Bookstore.BLL.Services;
 using Bookstore.DAL.ADO.Repositories;
 using Bookstore.DAL.ADO.Repositories.Interfaces;
+using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -43,6 +45,7 @@ namespace Bookstore.Backend.Extensions
             services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<IGenreOfBookRepository, GenreOfBookRepository>();
             services.AddTransient<IBookRepository, BookRepository>();
+            services.AddTransient<IAuthorRepositoryAdo, AuthorRepositoryAdo>();
 
         }
         public static void AddSwagger(this IServiceCollection services)
@@ -126,5 +129,20 @@ namespace Bookstore.Backend.Extensions
             });
         }
 
+        public static void AddConfigurations(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<SwaggerUrlConfiguration>(configuration.GetSection("SwaggerUrlConfiguration"));
+            services.Configure<SwaggerPathConfiguration>(configuration.GetSection("SwaggerPathConfiguration"));
+        }
+
+        public static void AddDatabaseContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            var connectionString = configuration.GetConnectionString("bookStore");
+
+            services.AddDbContext<BookStoreDbContext>(x => 
+                x.UseLazyLoadingProxies()
+                    .UseSqlServer(connectionString)
+                    .EnableSensitiveDataLogging());
+        }
     }
 }

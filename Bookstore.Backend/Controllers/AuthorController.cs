@@ -16,7 +16,7 @@ namespace Bookstore.Backend.Controllers
 {
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerRights")]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "ManagerRights")]
     public class AuthorController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -75,6 +75,19 @@ namespace Bookstore.Backend.Controllers
         public async Task<ActionResult<AuthorDTO>> GetAll()
         {
             var result = await _authorService.GetAllAuthorsAsync();
+
+            if (result.Any())
+            {
+                return Ok(result);
+            }
+
+            return BadRequest(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<AuthorNamesAndIdInfo>> GetAllAuthorsNameAndId()
+        {
+            var result = await _authorService.GetAllAuthorsNameAndId();
 
             if (result.Any())
             {

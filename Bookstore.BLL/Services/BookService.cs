@@ -8,7 +8,9 @@ using Bookstore.DAL.EF.Repositories;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using Bookstore.Core.Models.ModelsDTO.FilterModels;
 
 namespace Bookstore.BLL.Services
 {
@@ -43,10 +45,10 @@ namespace Bookstore.BLL.Services
 
         public async Task AddNewBookAsync(CreateNewBookModel book, string rootPath)
         {
-            //var images = await _bookImageService.ConvertIFormFileToListOfBookImagesAsync(book.ImageFiles);
-
             var genres = new List<GenreOfBook>();
             var authors = new List<Author>();
+
+            var images = new List<BookImage>();
 
             foreach (var id in book.GenresOfBookId)
             {
@@ -67,17 +69,37 @@ namespace Bookstore.BLL.Services
 
             await _bookRepositoryAdo.SaveAsync(newBook);
 
-            var pathToDirectoryBook = _fileService.CreateNewFolderForBook(rootPath, newBook.Id);
+            _fileService.CreateNewFolderForBook(rootPath, newBook.Id);
 
-            var fullPath = Path.Combine(pathToDirectoryBook, $"{newBook.Name}{newBook.Id}.pdf");
-
-            // How to check if the boo was create (best variant)
-            await using (var stream = new FileStream(fullPath, FileMode.OpenOrCreate))
+            //create new BookImage. Save in database. Save image in folder. Save imageUrl in database.
+            foreach (var image in book.ImageFiles)
             {
-                await book.book.CopyToAsync(stream);
+                var newImage = new BookImage { Book = newBook };
+
+                await _bookImageService.CreateBookImageAsync(newImage);
+
+                var imageUrl = _fileService.GetFullPathToImage(newBook.Name, newBook.Id, newImage.Id);
+
+                var fullPathForImage = Path.Combine(rootPath, imageUrl);
+
+                await _fileService.SaveFileInFolderAsync(image, fullPathForImage);
+
+                newImage.ImageUrl = imageUrl;
+
+                await _bookImageRepository.SaveAsync(newImage);
+
+                images.Add(newImage);
             }
 
-            newBook.BookUrl = _fileService.GetBookUrl(newBook.Name, newBook.Id);
+            var bookUrl = _fileService.GetFullPathToBook(newBook.Name, newBook.Id);
+
+            var fullPathForBook = Path.Combine(rootPath, bookUrl);
+
+            await _fileService.SaveFileInFolderAsync(book.book, fullPathForBook);
+
+            newBook.BookUrl = bookUrl;
+            newBook.Images = images;
+
             await _bookRepository.SaveAsync(newBook);
         }
 
@@ -107,7 +129,24 @@ namespace Bookstore.BLL.Services
             return result;
         }
 
-        public async Task<List<BooksForAuthorFiltr>> GetBooksByAuthorAsync(int authorId)
+        public async Task<LoadBookModel> LoadBookAsync(int bookId)
+        {
+            var book = await _bookRepositoryAdo.GetBookUrlAndNameAsync(bookId);
+            if (book == null)
+            {
+                throw new ArgumentNullException(nameof(book), $"Book with id={bookId} doesn't exist");
+            }
+
+            return _mapper.Map<LoadBookModel>(book);
+        }
+        //TODO This method mybe we will not use
+        public async Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId)
+        {
+            return await _bookRepositoryAdo.GetBooksByGenresAsync(genresId);
+        }
+
+        //TODO This method not work and maybe we will not use it
+        public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(int authorId)
         {
             var author = await _authorRepository.GetByIdAsync(authorId);
 
@@ -118,9 +157,12 @@ namespace Bookstore.BLL.Services
 
             return await _bookRepositoryAdo.GetBooksByAuthorAsync(author);
         }
-        public async Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId)
+
+        public async Task<List<BooksAfterFilterModel>> GetBooksByFilterAsync(FilterForBookModel conditions)
         {
-            return await _bookRepositoryAdo.GetBooksByGenresAsync(genresId);
+            var books = await _bookRepository.GetBooksByFilterAsync(conditions);
+
+            return _mapper.Map<List<BooksAfterFilterModel>>(books);
         }
     }
 }
