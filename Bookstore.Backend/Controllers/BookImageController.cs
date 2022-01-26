@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace Bookstore.Backend.Controllers
 {
@@ -14,24 +16,29 @@ namespace Bookstore.Backend.Controllers
     {
         private readonly IBookImageService _bookImageService;
         private readonly IMapper _mapper;
+        private IWebHostEnvironment _webHostEnvironment { get; set; }
 
         public BookImageController(IBookImageService bookImageService,
-            IMapper mapper)
+            IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _bookImageService = bookImageService;
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost] //TODO not work iFormFile
-        public async Task<ActionResult> AddImageToBook([FromBody] List<BookImageDTO> images, int bookId)
+        public async Task<ActionResult> AddImageToBook([FromBody] List<IFormFile> images, int bookId)
         {
-            throw new Exception();
+            var rootPath = _webHostEnvironment.WebRootPath;
+            _bookImageService.AddNewImageToExistBookAsync(images, bookId, rootPath);
+            return Ok();
         }
 
         [HttpDelete]
         public async Task<ActionResult> DeleteImage(int imageId)
         {
-            throw new Exception();
+            await _bookImageService.DeleteImageAsync(imageId);
+            return Ok();
         }
     }
 }

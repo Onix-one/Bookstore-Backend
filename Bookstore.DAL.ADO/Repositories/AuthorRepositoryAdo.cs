@@ -44,7 +44,6 @@ namespace Bookstore.DAL.ADO.Repositories
                     }
                 }
             }
-
             return authors;
         }
     }

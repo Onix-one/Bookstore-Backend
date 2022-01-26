@@ -28,6 +28,7 @@ namespace Bookstore.BLL.Services
         {
             await _authorRepository.SaveAsync(author);
         }
+
         public async Task DeleteAuthorAsync(int authorId)
         {
             var authorToDelete = await _authorRepository.GetByIdAsync(authorId);
@@ -39,6 +40,7 @@ namespace Bookstore.BLL.Services
 
             await _authorRepository.DeleteAsync(authorToDelete);
         }
+
         public async Task EditAuthorAsync(Author author)
         {
             await _authorRepository.SaveAsync(author);
@@ -59,6 +61,7 @@ namespace Bookstore.BLL.Services
 
             return authorsDto;
         }
+
         public async Task<List<AuthorDTO>> GetAllAuthorsWithBooksAsync()
         {
             var authors = await _authorRepository.GetAllAsync();
@@ -67,6 +70,7 @@ namespace Bookstore.BLL.Services
 
             return authorsDto;
         }
+
         public async Task<List<AuthorNamesAndIdInfo>> GetAllAuthorsNameAndId()
         {
             var authors = await _authorRepositoryAdo.GetAllAuthorsNameSurnameIdAsync();

@@ -20,6 +20,7 @@ namespace Bookstore.DAL.ADO.Repositories
         public BookRepositoryAdo(BookStoreDbContext bookStoreDbContext) : base(bookStoreDbContext)
         {
         }
+
         //TODO Not worked.
         public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(Author author)
         {

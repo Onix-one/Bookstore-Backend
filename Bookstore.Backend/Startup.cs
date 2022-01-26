@@ -81,7 +81,6 @@ namespace Bookstore.Backend
                 await generator.GenerateBackendTypescriptDefinition();
             }
             catch { }
-            finally { }
         }
     }
 }

@@ -79,7 +79,6 @@ namespace Bookstore.DAL.EF.Repositories
                 books = books.Where(book =>
                    book.Authors.Any(a => conditions.AuthorsId.Contains(a.Id)));
             }
-
             if (!conditions.GenresId.IsNullOrEmpty())
             {
                 books = books.Where(book =>
@@ -123,7 +122,8 @@ namespace Bookstore.DAL.EF.Repositories
                         Id = y.Id,
                         Genre = y.Genre
                     }).ToList()
-            }).ToListAsync();
+            }).AsNoTracking()
+                .ToListAsync();
 
             return result;
         }

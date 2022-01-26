@@ -29,7 +29,6 @@ namespace Bookstore.Backend.Tools
             CreateMap<Author, AuthorNamesAndIdInfo>()
                 .ForMember(nameof(AuthorNamesAndIdInfo.FullName),
                     config => config.MapFrom(src => $"{src.FirstName} {src.SecondName}"));
-            //CreateMap<List<Book>, List<BooksAfterFilterModel>>();
             CreateMap<Book, BooksAfterFilterModel>();
 
         }

@@ -63,7 +63,7 @@ namespace Bookstore.Backend.Controllers
         [HttpGet] 
         public async Task<VirtualFileResult> LoadBook(int bookId)
         {
-            var book = await _bookService.LoadBook(bookId);
+            var book = await _bookService.LoadBookAsync(bookId);
 
             return File(book.BookUrl, "application/octet-stream", $"{book.Name}.pdf");
         }
@@ -81,6 +81,7 @@ namespace Bookstore.Backend.Controllers
         //    return BadRequest(result);
         //}
 
+        //TODO maybe this method we will not use
         [HttpGet]
         [SwaggerResponse(200, Type = typeof(List<BooksForAuthorFilter>))]
         public async Task<ActionResult> GetBooksByAuthor(int authorId) // TODO What to return

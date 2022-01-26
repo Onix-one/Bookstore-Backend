@@ -40,7 +40,7 @@ namespace Bookstore.DAL.EF.Repositories
 
         public virtual async Task<List<Model>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
 
         public virtual async Task<Model> GetByIdAsync(int Id)

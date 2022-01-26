@@ -69,33 +69,35 @@ namespace Bookstore.BLL.Services
 
             await _bookRepositoryAdo.SaveAsync(newBook);
 
-            //Create new BookImages without url and save it in database
-            for (var i = 0; i < book.ImageFiles.Count(); i++)
+            _fileService.CreateNewFolderForBook(rootPath, newBook.Id);
+
+            //create new BookImage. Save in database. Save image in folder. Save imageUrl in database.
+            foreach (var image in book.ImageFiles)
             {
-                var image = new BookImage { Book = newBook };
-                await _bookImageService.CreateBookImageAsync(new BookImage { Book = newBook });
-                images.Add(image);
+                var newImage = new BookImage { Book = newBook };
+
+                await _bookImageService.CreateBookImageAsync(newImage);
+
+                var imageUrl = _fileService.GetFullPathToImage(newBook.Name, newBook.Id, newImage.Id);
+
+                var fullPathForImage = Path.Combine(rootPath, imageUrl);
+
+                await _fileService.SaveFileInFolderAsync(image, fullPathForImage);
+
+                newImage.ImageUrl = imageUrl;
+
+                await _bookImageRepository.SaveAsync(newImage);
+
+                images.Add(newImage);
             }
 
-            //Create new folder for new book in wwwroot/books 
-            var pathToDirectoryBook = _fileService.CreateNewFolderForBook(rootPath, newBook.Id);
+            var bookUrl = _fileService.GetFullPathToBook(newBook.Name, newBook.Id);
 
-
-            //Save images in folder and add urls to BookImages
-            for (var i = 0; i < images.Count(); i++)
-            {
-                var fullPathForImage = Path.Combine(pathToDirectoryBook, $"{newBook.Name}#{images[i].Id}.jpg");
-
-                await _fileService.SaveFileInFolderAsync(book.ImageFiles[i], fullPathForImage);
-
-                images[i].ImageUrl = _fileService.GetImageUrl(newBook.Id, images[i].Id);
-            }
-
-            var fullPathForBook = Path.Combine(pathToDirectoryBook, $"{newBook.Id}.pdf");
+            var fullPathForBook = Path.Combine(rootPath, bookUrl);
 
             await _fileService.SaveFileInFolderAsync(book.book, fullPathForBook);
 
-            newBook.BookUrl = _fileService.GetBookUrl(newBook.Name, newBook.Id);
+            newBook.BookUrl = bookUrl;
             newBook.Images = images;
 
             await _bookRepository.SaveAsync(newBook);
@@ -113,7 +115,6 @@ namespace Bookstore.BLL.Services
             await _bookRepositoryAdo.DeleteAsync(bookToDelete);
         }
 
-
         public async Task<BookDTO> GetBookByIdAsync(int bookId)
         {
             var book = await _bookRepository.GetByIdAsync(bookId); // TODO What a fuck with include
@@ -128,7 +129,7 @@ namespace Bookstore.BLL.Services
             return result;
         }
 
-        public async Task<LoadBookModel> LoadBook(int bookId)
+        public async Task<LoadBookModel> LoadBookAsync(int bookId)
         {
             var book = await _bookRepositoryAdo.GetBookUrlAndNameAsync(bookId);
             if (book == null)
@@ -138,12 +139,13 @@ namespace Bookstore.BLL.Services
 
             return _mapper.Map<LoadBookModel>(book);
         }
-
+        //TODO This method mybe we will not use
         public async Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId)
         {
             return await _bookRepositoryAdo.GetBooksByGenresAsync(genresId);
         }
 
+        //TODO This method not work and maybe we will not use it
         public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(int authorId)
         {
             var author = await _authorRepository.GetByIdAsync(authorId);
@@ -155,6 +157,7 @@ namespace Bookstore.BLL.Services
 
             return await _bookRepositoryAdo.GetBooksByAuthorAsync(author);
         }
+
         public async Task<List<BooksAfterFilterModel>> GetBooksByFilterAsync(FilterForBookModel conditions)
         {
             var books = await _bookRepository.GetBooksByFilterAsync(conditions);

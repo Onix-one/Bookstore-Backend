@@ -25,6 +25,7 @@ namespace Bookstore.BLL.Services
         {
             await _genreOfBookRepository.SaveAsync(author);
         }
+
         public async Task DeleteGenreOfBookAsync(int genreId)
         {
             var genreToDelete = await _genreOfBookRepository.GetByIdAsync(genreId);
@@ -36,6 +37,7 @@ namespace Bookstore.BLL.Services
 
             await _genreOfBookRepository.DeleteAsync(genreToDelete);
         }
+
         public async Task EditGenreOfBookAsync(GenreOfBook genre)
         {
             await _genreOfBookRepository.SaveAsync(genre);
@@ -49,6 +51,7 @@ namespace Bookstore.BLL.Services
 
             return authorsDto;
         }
+
         public async Task<GenreOfBookDTO> GetGenreOfBookByIdAsync(int genreId)
         {
             var genre = await _genreOfBookRepository.GetByIdAsync(genreId);
