@@ -52,10 +52,5 @@ namespace Bookstore.DAL.EF.Context
                 .HasMany(x => x.Images)
                 .WithOne(x => x.Book);
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseLazyLoadingProxies();
-            base.OnConfiguring(optionsBuilder);
-        }
     }
 }

@@ -14,6 +14,7 @@ namespace Bookstore.BLL.Interfaces
         public Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(int authorId);
         public Task DeleteBookAsync(int bookId);
         public Task<BookDTO> GetBookByIdAsync(int bookId);
+        public Task<GetMaxAndMinPriceInfo> GetMinAndMaxPriceAsync();
         public Task<LoadBookModel> LoadBookAsync(int bookId);
         public Task<List<BooksByGenreFiltr>> GetBooksByGenresAsync(List<int> genresId);
         public Task<List<BooksAfterFilterModel>> GetBooksByFilterAsync(FilterForBookModel conditions);

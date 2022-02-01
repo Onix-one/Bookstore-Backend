@@ -48,7 +48,7 @@ namespace Bookstore.Backend
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookstore.Backend v1"));
-                GenerateClientsAsync(env, swaggerUrlConfiruration.Value, swaggerPathConfiruration.Value);
+                //GenerateClientsAsync(env, swaggerUrlConfiruration.Value, swaggerPathConfiruration.Value);
             }
 
             app.UseRouting();

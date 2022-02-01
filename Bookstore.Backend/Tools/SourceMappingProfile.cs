@@ -17,12 +17,11 @@ namespace Bookstore.Backend.Tools
                 .ForMember(nameof(Author.GenreOfBooks),
                     config => config.MapFrom(src => src.GenresOfBookId));
 
-            CreateMap<Author, AuthorDTO>().ReverseMap();
+            CreateMap<Author, AuthorDTO>().ReverseMap().ForMember(nameof(Author.GenreOfBooks),x=>x.Ignore()).ForMember(nameof(Author.Books), x => x.Ignore());
             CreateMap<GenreOfBook, GenreOfBookDTO>().ReverseMap();
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<Book, BookDTO>().ReverseMap();
             CreateMap<CreateNewBookModel, Book>().ReverseMap();
-            CreateMap<AuthorDTO, Author>().ReverseMap();
             CreateMap<CreateNewGenreOfBookModel, GenreOfBook>().ReverseMap();
             CreateMap<GetAllGenreModel, GenreOfBook>().ReverseMap();
             CreateMap<LoadBookModel, Book>().ReverseMap();
