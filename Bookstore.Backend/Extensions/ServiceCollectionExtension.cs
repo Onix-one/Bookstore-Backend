@@ -139,9 +139,8 @@ namespace Bookstore.Backend.Extensions
         {
             var connectionString = configuration.GetConnectionString("bookStore");
 
-            services.AddDbContext<BookStoreDbContext>(x => 
-                x.UseLazyLoadingProxies()
-                    .UseSqlServer(connectionString)
+            services.AddDbContext<BookStoreDbContext>(x =>
+                x.UseSqlServer(connectionString)
                     .EnableSensitiveDataLogging());
         }
     }

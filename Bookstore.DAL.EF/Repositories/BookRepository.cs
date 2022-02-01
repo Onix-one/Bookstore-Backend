@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Bookstore.Core.Models.ModelsDTO.BookModels;
 
 namespace Bookstore.DAL.EF.Repositories
 {
@@ -50,6 +51,16 @@ namespace Bookstore.DAL.EF.Repositories
                 }).FirstOrDefaultAsync(x => x.Id == id);
 
             return result;
+        }
+
+        public async Task<GetMaxAndMinPriceInfo> GetMaxAndMinPriceAsync()
+        {
+            var getMaxAndMinPriceInfo = new GetMaxAndMinPriceInfo();
+
+            getMaxAndMinPriceInfo.MaxPrice = await _dbSet.Select(x => x.Price).MaxAsync();
+            getMaxAndMinPriceInfo.MinPrice = await _dbSet.Select(x=>x.Price).MinAsync();
+
+            return getMaxAndMinPriceInfo;
         }
 
         public async Task<List<int>> GetAllImagesIdOfBookAsync(int bookId)
@@ -132,6 +143,8 @@ namespace Bookstore.DAL.EF.Repositories
     public interface IBookRepository : IBaseRepository<Book>
     {
         public Task<List<int>> GetAllImagesIdOfBookAsync(int bookId);
+
+        public Task<GetMaxAndMinPriceInfo> GetMaxAndMinPriceAsync();
         //public Task<Book> GetBookUrlAndNameAsync(int bookId);
         public Task<List<Book>> GetBooksByFilterAsync(FilterForBookModel conditions);
     }

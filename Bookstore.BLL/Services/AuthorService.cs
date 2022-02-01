@@ -36,6 +36,7 @@ namespace Bookstore.BLL.Services
             if (authorToDelete == null)
             {
                 throw new ArgumentNullException(nameof(authorToDelete), $"Author with id={authorId} doesn't exist");
+
             }
 
             await _authorRepository.DeleteAsync(authorToDelete);
@@ -57,7 +58,7 @@ namespace Bookstore.BLL.Services
         {
             var authors = await _authorRepository.GetAllAsync();
 
-            var authorsDto = _mapper.Map<List<AuthorDTO>>(authors);
+            var authorsDto = _mapper.Map<List<Author>, List<AuthorDTO>>(authors);
 
             return authorsDto;
         }
@@ -66,7 +67,7 @@ namespace Bookstore.BLL.Services
         {
             var authors = await _authorRepository.GetAllAsync();
 
-            var authorsDto = _mapper.Map<List<AuthorDTO>>(authors);
+            var authorsDto = _mapper.Map<List<Author>, List<AuthorDTO>>(authors);
 
             return authorsDto;
         }

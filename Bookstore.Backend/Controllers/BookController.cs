@@ -13,7 +13,7 @@ using Bookstore.Core.Models.ModelsDTO.FilterModels;
 
 namespace Bookstore.Backend.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]")]
     [ApiController]
     //TODO add roles
     public class BookController : ControllerBase
@@ -37,10 +37,9 @@ namespace Bookstore.Backend.Controllers
             var rootPath = _webHostEnvironment.WebRootPath;
             await _bookService.AddNewBookAsync(book, rootPath);
             return Ok();
-
         }
 
-        [HttpDelete]
+        [HttpDelete("{bookId}")]
         public async Task<ActionResult> DeleteBook(int bookId)
         {
             await _bookService.DeleteBookAsync(bookId);
@@ -48,7 +47,7 @@ namespace Bookstore.Backend.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        [HttpGet("{bookId}")]
         public async Task<ActionResult<BookDTO>> GetBookById(int bookId)
         {
             var result = await _bookService.GetBookByIdAsync(bookId);
@@ -60,12 +59,21 @@ namespace Bookstore.Backend.Controllers
             return BadRequest();
         }
 
-        [HttpGet] 
-        public async Task<VirtualFileResult> LoadBook(int bookId)
+        [HttpGet("{bookId}/download")]
+        public async Task<VirtualFileResult> DownloadBook(int bookId)
         {
             var book = await _bookService.LoadBookAsync(bookId);
 
             return File(book.BookUrl, "application/octet-stream", $"{book.Name}.pdf");
+        }
+
+
+        [HttpPost("minmax-price")]
+        public async Task<ActionResult<GetMaxAndMinPriceInfo>> GetMaxAndMinPrice()
+        {
+            var result = await _bookService.GetMinAndMaxPriceAsync();
+
+            return result != null ? (ActionResult)Ok(result) : BadRequest();
         }
 
         //[HttpGet]
@@ -82,7 +90,7 @@ namespace Bookstore.Backend.Controllers
         //}
 
         //TODO maybe this method we will not use
-        [HttpGet]
+        [HttpPost("filterByAuthor/{authorId}")]
         [SwaggerResponse(200, Type = typeof(List<BooksForAuthorFilter>))]
         public async Task<ActionResult> GetBooksByAuthor(int authorId) // TODO What to return
         {
@@ -95,7 +103,7 @@ namespace Bookstore.Backend.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpPost("filterByGenres")]
         [SwaggerResponse(200, Type = typeof(List<BooksByGenreFiltr>))]
         public async Task<ActionResult> GetBooksByGenre([FromBody] List<int> genresId)
         {
@@ -108,8 +116,8 @@ namespace Bookstore.Backend.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<BooksAfterFilterModel>>> GetBooksByFilter([FromQuery] FilterForBookModel conditions)
+        [HttpPost("filter")]
+        public async Task<ActionResult<List<BooksAfterFilterModel>>> GetBooksByFilter([FromBody] FilterForBookModel conditions)
         {
             var result = await _bookService.GetBooksByFilterAsync(conditions);
 

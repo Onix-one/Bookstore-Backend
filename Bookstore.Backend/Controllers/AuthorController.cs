@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using Bookstore.DAL.EF.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using NLog;
+using LogLevel = NLog.LogLevel;
 
 
 namespace Bookstore.Backend.Controllers
@@ -22,14 +25,16 @@ namespace Bookstore.Backend.Controllers
         private readonly IMapper _mapper;
         private readonly IAuthorService _authorService;
         private readonly IGenreOfBookRepository _genreOfBookRepository;
+        private readonly ILogger<AuthorController> _logger;
 
         public AuthorController(IMapper mapper,
             IAuthorService authorService,
-            IGenreOfBookRepository genreOfBookRepository)
+            IGenreOfBookRepository genreOfBookRepository, ILogger<AuthorController> logger)
         {
             _mapper = mapper;
             _authorService = authorService;
             _genreOfBookRepository = genreOfBookRepository;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -80,7 +85,6 @@ namespace Bookstore.Backend.Controllers
             {
                 return Ok(result);
             }
-
             return BadRequest(result);
         }
 

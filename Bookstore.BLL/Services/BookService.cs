@@ -129,6 +129,11 @@ namespace Bookstore.BLL.Services
             return result;
         }
 
+        public async Task<GetMaxAndMinPriceInfo> GetMinAndMaxPriceAsync()
+        {
+            return await _bookRepository.GetMaxAndMinPriceAsync();
+        }
+
         public async Task<LoadBookModel> LoadBookAsync(int bookId)
         {
             var book = await _bookRepositoryAdo.GetBookUrlAndNameAsync(bookId);
