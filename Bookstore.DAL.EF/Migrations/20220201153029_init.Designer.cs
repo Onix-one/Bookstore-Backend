@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookstore.DAL.EF.Migrations
 {
     [DbContext(typeof(BookStoreDbContext))]
-    [Migration("20220121101835_init")]
+    [Migration("20220201153029_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,21 +34,6 @@ namespace Bookstore.DAL.EF.Migrations
                     b.HasIndex("BooksId");
 
                     b.ToTable("AuthorBook");
-                });
-
-            modelBuilder.Entity("AuthorGenreOfBook", b =>
-                {
-                    b.Property<int>("AuthorsId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GenreOfBooksId")
-                        .HasColumnType("int");
-
-                    b.HasKey("AuthorsId", "GenreOfBooksId");
-
-                    b.HasIndex("GenreOfBooksId");
-
-                    b.ToTable("AuthorGenreOfBook");
                 });
 
             modelBuilder.Entity("BookCustomer", b =>
@@ -210,7 +195,7 @@ namespace Bookstore.DAL.EF.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Genre")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -244,21 +229,6 @@ namespace Bookstore.DAL.EF.Migrations
                     b.HasOne("Bookstore.Core.Models.Entities.Book", null)
                         .WithMany()
                         .HasForeignKey("BooksId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("AuthorGenreOfBook", b =>
-                {
-                    b.HasOne("Bookstore.Core.Models.Entities.Author", null)
-                        .WithMany()
-                        .HasForeignKey("AuthorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Bookstore.Core.Models.Entities.GenreOfBook", null)
-                        .WithMany()
-                        .HasForeignKey("GenreOfBooksId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

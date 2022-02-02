@@ -12,6 +12,5 @@ namespace Bookstore.Core.Models.ModelsDTO
         public string Biografy { get; set; }
         public string Nationality { get; set; }
         public List<BookDTO> Books { get; set; }
-        public List<GenreOfBookDTO> GenresOfBook { get; set; }
     }
 }

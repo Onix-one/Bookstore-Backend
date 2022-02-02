@@ -47,6 +47,14 @@ namespace Bookstore.BLL.Services
             await _authorRepository.SaveAsync(author);
         }
 
+        public async Task<List<AuthorNamesAndIdInfo>> GetAllAuthorsByPartOfNameAsync(string partOFName)
+        {
+
+            var authors = await _authorRepository.GetAllAuthorsByPartOfNameAsync(partOFName.ToString().ToUpper());
+
+            return _mapper.Map<List<AuthorNamesAndIdInfo>>(authors);
+        }
+
         public async Task<AuthorDTO> GetAuthorByIdAsync(int authorId)
         {
             var author = await _authorRepository.GetByIdAsync(authorId);
@@ -88,6 +96,7 @@ namespace Bookstore.BLL.Services
         public Task DeleteAuthorAsync(int authorId);
         public Task EditAuthorAsync(Author author);
         public Task<List<AuthorDTO>> GetAllAuthorsAsync();
+        public Task<List<AuthorNamesAndIdInfo>> GetAllAuthorsByPartOfNameAsync(string partOFName);
         public Task<AuthorDTO> GetAuthorByIdAsync(int authorId);
         public Task<List<AuthorNamesAndIdInfo>> GetAllAuthorsNameAndId();
     }

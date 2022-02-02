@@ -46,7 +46,7 @@ namespace Bookstore.DAL.EF.Repositories
                         new GenreOfBook()
                         {
                             Id = y.Id,
-                            Genre = y.Genre
+                            Name = y.Name
                         }).ToList()
                 }).FirstOrDefaultAsync(x => x.Id == id);
 
@@ -131,7 +131,7 @@ namespace Bookstore.DAL.EF.Repositories
                     new GenreOfBook()
                     {
                         Id = y.Id,
-                        Genre = y.Genre
+                        Name = y.Name
                     }).ToList()
             }).AsNoTracking()
                 .ToListAsync();
