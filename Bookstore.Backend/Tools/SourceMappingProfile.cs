@@ -13,11 +13,8 @@ namespace Bookstore.Backend.Tools
         public SourceMappingProfile()
         {
             CreateMap<int, GenreOfBook>().ForMember(dest => dest.Id, m => m.MapFrom(src => src));
-            CreateMap<CreateNewAuthorModel, Author>() // TODO this is test variant
-                .ForMember(nameof(Author.GenreOfBooks),
-                    config => config.MapFrom(src => src.GenresOfBookId));
-
-            CreateMap<Author, AuthorDTO>().ReverseMap().ForMember(nameof(Author.GenreOfBooks),x=>x.Ignore()).ForMember(nameof(Author.Books), x => x.Ignore());
+            CreateMap<CreateNewAuthorModel, Author>(); 
+            CreateMap<Author, AuthorDTO>().ReverseMap();
             CreateMap<GenreOfBook, GenreOfBookDTO>().ReverseMap();
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<Book, BookDTO>().ReverseMap();
@@ -25,9 +22,7 @@ namespace Bookstore.Backend.Tools
             CreateMap<CreateNewGenreOfBookModel, GenreOfBook>().ReverseMap();
             CreateMap<GetAllGenreModel, GenreOfBook>().ReverseMap();
             CreateMap<LoadBookModel, Book>().ReverseMap();
-            CreateMap<Author, AuthorNamesAndIdInfo>()
-                .ForMember(nameof(AuthorNamesAndIdInfo.FullName),
-                    config => config.MapFrom(src => $"{src.FirstName} {src.SecondName}"));
+            CreateMap<Author, AuthorNamesAndIdInfo>().ReverseMap();
             CreateMap<Book, BooksAfterFilterModel>();
 
         }

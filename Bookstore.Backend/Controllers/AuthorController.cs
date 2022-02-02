@@ -38,25 +38,16 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateNewAuthorModel author)
+        public async Task<ActionResult> CreateAuthor([FromBody] CreateNewAuthorModel author)
         {
-            var genreOfBooks = new List<GenreOfBook>();
-
-            foreach (var genreId in author.GenresOfBookId)
-            {
-                var genre = await _genreOfBookRepository.GetByIdAsync(genreId);
-                genreOfBooks.Add(genre);
-            }
-
             var newAuthor = _mapper.Map<Author>(author);
 
-            newAuthor.GenreOfBooks = genreOfBooks;
             await _authorService.CreateNewAuthorAsync(newAuthor);
             return Ok();
         }
 
         [HttpPost] //TODO Change model 
-        public async Task<ActionResult> Edit([FromBody] AuthorDTO author)
+        public async Task<ActionResult> EditAuthor([FromBody] AuthorDTO author)
         {
             var newAuthor = _mapper.Map<Author>(author);
             await _authorService.EditAuthorAsync(newAuthor);
@@ -65,7 +56,7 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpDelete]
-        public async Task<ActionResult> Delete(int authorId)
+        public async Task<ActionResult> DeleteAuthor(int authorId)
         {
             await _authorService.DeleteAuthorAsync(authorId);
 
@@ -77,7 +68,7 @@ namespace Bookstore.Backend.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<AuthorDTO>> GetAll()
+        public async Task<ActionResult<AuthorDTO>> GetAllAuthors()
         {
             var result = await _authorService.GetAllAuthorsAsync();
 
@@ -86,6 +77,14 @@ namespace Bookstore.Backend.Controllers
                 return Ok(result);
             }
             return BadRequest(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<AuthorDTO>> GetAllAuthorsByPartOfName(string partOFName)
+        {
+            var result = await _authorService.GetAllAuthorsByPartOfNameAsync(partOFName);
+
+            return Ok(result);
         }
 
         [HttpGet]

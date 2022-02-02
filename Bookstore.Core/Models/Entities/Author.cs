@@ -11,6 +11,5 @@ namespace Bookstore.Core.Models.Entities
         public string Biografy { get; set; }
         public string Nationality { get; set; }
         public virtual ICollection<Book> Books { get; set; }
-        public virtual ICollection<GenreOfBook> GenreOfBooks { get; set; }
     }
 }

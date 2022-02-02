@@ -44,10 +44,6 @@ namespace Bookstore.DAL.EF.Context
                 .HasMany(x => x.FavoriteTypes)
                 .WithMany(x => x.FansOfGenres);
 
-            modelBuilder.Entity<Author>()
-                .HasMany(x => x.GenreOfBooks)
-                .WithMany(x => x.Authors);
-
             modelBuilder.Entity<Book>()
                 .HasMany(x => x.Images)
                 .WithOne(x => x.Book);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Bookstore.Core.Models.Entities;
 using Bookstore.DAL.EF.Context;
@@ -30,20 +31,22 @@ namespace Bookstore.DAL.EF.Repositories
                             Id = y.Id,
                             Name = y.Name,
                             Rating = y.Rating
-                        }).ToList(),
-                    GenreOfBooks = x.GenreOfBooks.Select(y =>
-                        new GenreOfBook()
-                        {
-                            Id = y.Id,
-                            Genre = y.Genre
                         }).ToList()
                 }).FirstOrDefaultAsync(x => x.Id == id);
 
             return result;
         }
+
+        public async Task<List<Author>> GetAllAuthorsByPartOfNameAsync(string partOFName)
+        {
+            return await _dbSet.Where(t => t.FirstName.ToUpper().StartsWith(partOFName) 
+                                           || t.SecondName.ToUpper().StartsWith(partOFName))
+                .ToListAsync();
+        }
     }
 
     public interface IAuthorRepository : IBaseRepository<Author>
     {
+        public Task<List<Author>> GetAllAuthorsByPartOfNameAsync(string partOFName);
     }
 }

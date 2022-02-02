@@ -15,7 +15,5 @@ namespace Bookstore.Core.Models.ModelsDTO.AuthorModels
         public string Biografy { get; set; }
         [Required]
         public string Nationality { get; set; }
-        [Required]
-        public List<int> GenresOfBookId { get; set; }
     }
 }
