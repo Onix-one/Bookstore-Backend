@@ -23,7 +23,9 @@ namespace Bookstore.Backend.Tools
             CreateMap<GetAllGenreModel, GenreOfBook>().ReverseMap();
             CreateMap<LoadBookModel, Book>().ReverseMap();
             CreateMap<Author, AuthorNamesAndIdInfo>().ReverseMap();
-            CreateMap<Book, BooksAfterFilterModel>();
+            CreateMap<Book, BooksAfterFilterModel>().ReverseMap();
+            CreateMap<GenreOfBookNamesAndIdInfo, GenreOfBook>().ReverseMap();
+            
 
         }
     }

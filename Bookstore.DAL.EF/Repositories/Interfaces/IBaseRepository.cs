@@ -9,6 +9,7 @@ namespace Bookstore.DAL.EF.Repositories.Interfaces
         public Task SaveAsync(Model model);
         public Task DeleteAsync(Model model);
         public Task<List<Model>> GetAllAsync();
-        public Task<Model> GetByIdAsync(int Id);
+        public Task<Model> GetByIdAsync(int id);
+        public Task<List<Model>> GetByListOfIdAsync(List<int> listId);
     }
 }

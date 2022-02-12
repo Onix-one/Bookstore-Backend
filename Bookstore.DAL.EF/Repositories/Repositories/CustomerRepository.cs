@@ -2,7 +2,7 @@
 using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories.Interfaces;
 
-namespace Bookstore.DAL.EF.Repositories
+namespace Bookstore.DAL.EF.Repositories.Repositories
 {
     public class CustomerRepository : BaseRepository<Customer>, ICustomerRepository
     {

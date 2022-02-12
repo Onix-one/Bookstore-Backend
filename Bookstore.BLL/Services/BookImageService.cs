@@ -6,30 +6,33 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Bookstore.DAL.EF.Repositories.Interfaces;
+using Bookstore.DAL.EF.Repositories.Repositories;
 
 namespace Bookstore.BLL.Services
 {
     public class BookImageService : IBookImageService
     {
-        private readonly IBookImageRepository _bookImageRepository;
-        private readonly IBookRepository _bookRepository;
         private readonly IFileService _fileService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public BookImageService(IBookImageRepository bookImageRepository, IBookRepository bookRepository, IFileService fileService)
+        public BookImageService(IFileService fileService,
+            IUnitOfWork unitOfWork)
         {
-            _bookImageRepository = bookImageRepository;
-            _bookRepository = bookRepository;
+
             _fileService = fileService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task CreateBookImageAsync(BookImage bookImage)
         {
-            await _bookImageRepository.SaveAsync(bookImage);
+            await _unitOfWork.BookImageRepository.SaveAsync(bookImage);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task AddNewImageToExistBookAsync(List<IFormFile> images, int bookId, string rootPath)
         {
-            var book = await _bookRepository.GetByIdAsync(bookId);
+            var book = await _unitOfWork.BookRepository.GetByIdAsync(bookId);
 
             if (book == null)
             {
@@ -42,7 +45,7 @@ namespace Bookstore.BLL.Services
             {
                 var newImage = new BookImage() { Book = book };
 
-                await _bookImageRepository.SaveAsync(newImage);
+                await _unitOfWork.BookImageRepository.SaveAsync(newImage);
 
                 var imageUrl = _fileService.GetFullPathToImage(book.Name, book.Id, newImage.Id);
 
@@ -52,20 +55,22 @@ namespace Bookstore.BLL.Services
 
                 newImage.ImageUrl = imageUrl;
 
-                await _bookImageRepository.SaveAsync(newImage);
+                await _unitOfWork.BookImageRepository.SaveAsync(newImage);
             }
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteImageAsync(int imageId)
         {
-            var bookImageDelete = await _bookImageRepository.GetByIdAsync(imageId);
+            var bookImageDelete = await _unitOfWork.BookImageRepository.GetByIdAsync(imageId);
 
             if (bookImageDelete == null)
             {
                 throw new ArgumentNullException(nameof(bookImageDelete), $"Image with id={imageId} doesn't exist");
             }
 
-            await _bookImageRepository.DeleteAsync(bookImageDelete);
+            await _unitOfWork.BookImageRepository.DeleteAsync(bookImageDelete);
+            await _unitOfWork.SaveAsync();
         }
 
         /// <summary>

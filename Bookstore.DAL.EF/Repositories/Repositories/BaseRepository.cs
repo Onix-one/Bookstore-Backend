@@ -1,15 +1,15 @@
-﻿using Bookstore.Core.Models.Entities;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Bookstore.Core.Models.Entities;
 using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Bookstore.DAL.EF.Repositories
+namespace Bookstore.DAL.EF.Repositories.Repositories
 {
     public abstract class BaseRepository<Model> : IBaseRepository<Model> where Model : BaseModel
     {
-        private readonly BookStoreDbContext _bookStoreDbContext;
+        private protected readonly BookStoreDbContext _bookStoreDbContext;
         private protected readonly DbSet<Model> _dbSet;
 
         protected BaseRepository(BookStoreDbContext bookStoreDbContext)
@@ -28,14 +28,11 @@ namespace Bookstore.DAL.EF.Repositories
             {
                 _dbSet.Add(model);
             }
-
-            await _bookStoreDbContext.SaveChangesAsync();
         }
 
         public virtual async Task DeleteAsync(Model model)
         {
             _dbSet.Remove(model);
-            await _bookStoreDbContext.SaveChangesAsync();
         }
 
         public virtual async Task<List<Model>> GetAllAsync()
@@ -46,6 +43,17 @@ namespace Bookstore.DAL.EF.Repositories
         public virtual async Task<Model> GetByIdAsync(int Id)
         {
             return await _dbSet.FirstOrDefaultAsync(x => x.Id == Id);
+        }
+        public virtual async Task<List<Model>> GetByListOfIdAsync(List<int> listId)
+        {
+            var result = new List<Model>();
+            foreach (var id in listId)
+            {
+                var model = await _dbSet.FirstOrDefaultAsync(x => x.Id == id);
+                result.Add(model);
+            }
+
+            return result;
         }
     }
 }

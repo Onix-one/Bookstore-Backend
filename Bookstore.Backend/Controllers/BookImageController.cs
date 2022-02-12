@@ -15,14 +15,12 @@ namespace Bookstore.Backend.Controllers
     public class BookImageController : ControllerBase
     {
         private readonly IBookImageService _bookImageService;
-        private readonly IMapper _mapper;
         private IWebHostEnvironment _webHostEnvironment { get; set; }
 
         public BookImageController(IBookImageService bookImageService,
-            IMapper mapper, IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment)
         {
             _bookImageService = bookImageService;
-            _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
         }
 
@@ -34,7 +32,7 @@ namespace Bookstore.Backend.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{imageId}")]
         public async Task<ActionResult> DeleteImage(int imageId)
         {
             await _bookImageService.DeleteImageAsync(imageId);

@@ -30,6 +30,10 @@ namespace Bookstore.Backend.Tools
                 settings ?? new TypeScriptClientGeneratorSettings
                 {
                     Template = TypeScriptTemplate.Axios,
+                    ExceptionClass = "BestClass",
+                    
+
+
                 }
             );
             var tsCode = generator.GenerateFile();

@@ -57,26 +57,27 @@ namespace Bookstore.IdentityApi.Services
             return await _userManager.Users.AnyAsync(x => x.Email == modelDto.Email);
         }
 
-        public async Task<Tuple<string, IdentityResult>> LoginAsync(LoginDto modelDto)
+        public async Task<Tuple<string, IdentityResult,User,IList<string>>> LoginAsync(LoginDto modelDto)
         {
             var user = await _userManager.FindByNameAsync(modelDto.Email);
             if (user == null)
             {
-                return new Tuple<string, IdentityResult>(default, IdentityResult.Failed());
+                return new Tuple<string, IdentityResult,User, IList<string>>(default, IdentityResult.Failed(), user,null);
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, modelDto.Password, false);
             if (!result.Succeeded)
             {
-                return new Tuple<string, IdentityResult>(default, IdentityResult.Failed());
+                return new Tuple<string, IdentityResult, User, IList<string>>(default, IdentityResult.Failed(), user,null);
             }
 
             user.LastLogin = DateTime.Now;
             await _userManager.UpdateAsync(user);
+            var roles = await _userManager.GetRolesAsync(user);
 
             var claimsIdentity = GetIdentityClaims(user);
             var token = _jwtTokenService.GenerateJwtToken(claimsIdentity);
-            return new Tuple<string, IdentityResult>(token, IdentityResult.Success);
+            return new Tuple<string, IdentityResult,User, IList<string>>(token, IdentityResult.Success,user,roles);
         }
 
         private ClaimsIdentity GetIdentityClaims(User user)

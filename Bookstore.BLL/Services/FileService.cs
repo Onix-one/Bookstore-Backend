@@ -28,6 +28,10 @@ namespace Bookstore.BLL.Services
 
         public async Task SaveFileInFolderAsync(IFormFile file, string fullPath)
         {
+            if (file ==null)
+            {
+                return;
+            }
             await using (var stream = new FileStream(fullPath, FileMode.OpenOrCreate))
             {
                 await file.CopyToAsync(stream);

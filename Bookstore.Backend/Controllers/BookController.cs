@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Bookstore.Core.Models.ModelsDTO.FilterModels;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookstore.Backend.Controllers
 {
@@ -38,6 +40,14 @@ namespace Bookstore.Backend.Controllers
             await _bookService.AddNewBookAsync(book, rootPath);
             return Ok();
         }
+
+        //[HttpPut]
+        //public async Task<ActionResult> UpdateBook([FromBody] UpdateBookModel book) // TODO How to check result
+        //{
+        //    var rootPath = _webHostEnvironment.WebRootPath;
+        //    await _bookService.AddNewBookAsync(book, rootPath);
+        //    return Ok();
+        //}
 
         [HttpDelete("{bookId}")]
         public async Task<ActionResult> DeleteBook(int bookId)
@@ -69,6 +79,7 @@ namespace Bookstore.Backend.Controllers
 
 
         [HttpPost("minmax-price")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<GetMaxAndMinPriceInfo>> GetMaxAndMinPrice()
         {
             var result = await _bookService.GetMinAndMaxPriceAsync();

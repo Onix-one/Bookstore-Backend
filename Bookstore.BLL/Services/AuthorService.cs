@@ -7,31 +7,38 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Bookstore.Core.Models.ModelsDTO.AuthorModels;
 using Bookstore.DAL.ADO.Repositories;
+using Bookstore.DAL.ADO.Repositories.Repositories;
+using Bookstore.DAL.EF.Repositories.Interfaces;
+using Bookstore.DAL.EF.Repositories.Repositories;
 
 namespace Bookstore.BLL.Services
 {
     public class AuthorService : IAuthorService
     {
-        private readonly IAuthorRepository _authorRepository;
+
         private readonly IMapper _mapper;
         private readonly IAuthorRepositoryAdo _authorRepositoryAdo;
+        private readonly IUnitOfWork _unitOfWork;
 
         public AuthorService(IAuthorRepository authorRepository,
-            IMapper mapper, IAuthorRepositoryAdo authorRepositoryAdo)
+            IMapper mapper,
+            IAuthorRepositoryAdo authorRepositoryAdo,
+            IUnitOfWork unitOfWork)
         {
-            _authorRepository = authorRepository;
             _mapper = mapper;
             _authorRepositoryAdo = authorRepositoryAdo;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task CreateNewAuthorAsync(Author author)
         {
-            await _authorRepository.SaveAsync(author);
+            await _unitOfWork.AuthorRepository.SaveAsync(author);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteAuthorAsync(int authorId)
         {
-            var authorToDelete = await _authorRepository.GetByIdAsync(authorId);
+            var authorToDelete = await _unitOfWork.AuthorRepository.GetByIdAsync(authorId);
 
             if (authorToDelete == null)
             {
@@ -39,32 +46,34 @@ namespace Bookstore.BLL.Services
 
             }
 
-            await _authorRepository.DeleteAsync(authorToDelete);
+            await _unitOfWork.AuthorRepository.DeleteAsync(authorToDelete);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task EditAuthorAsync(Author author)
         {
-            await _authorRepository.SaveAsync(author);
+            await _unitOfWork.AuthorRepository.SaveAsync(author);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task<List<AuthorNamesAndIdInfo>> GetAllAuthorsByPartOfNameAsync(string partOFName)
         {
 
-            var authors = await _authorRepository.GetAllAuthorsByPartOfNameAsync(partOFName.ToString().ToUpper());
+            var authors = await _unitOfWork.AuthorRepository.GetAllAuthorsByPartOfNameAsync(partOFName.ToString().ToUpper());
 
             return _mapper.Map<List<AuthorNamesAndIdInfo>>(authors);
         }
 
         public async Task<AuthorDTO> GetAuthorByIdAsync(int authorId)
         {
-            var author = await _authorRepository.GetByIdAsync(authorId);
+            var author = await _unitOfWork.AuthorRepository.GetByIdAsync(authorId);
 
             return _mapper.Map<AuthorDTO>(author);
         }
 
         public async Task<List<AuthorDTO>> GetAllAuthorsAsync()
         {
-            var authors = await _authorRepository.GetAllAsync();
+            var authors = await _unitOfWork.AuthorRepository.GetAllAsync();
 
             var authorsDto = _mapper.Map<List<Author>, List<AuthorDTO>>(authors);
 
@@ -73,7 +82,7 @@ namespace Bookstore.BLL.Services
 
         public async Task<List<AuthorDTO>> GetAllAuthorsWithBooksAsync()
         {
-            var authors = await _authorRepository.GetAllAsync();
+            var authors = await _unitOfWork.AuthorRepository.GetAllAsync();
 
             var authorsDto = _mapper.Map<List<Author>, List<AuthorDTO>>(authors);
 

@@ -1,15 +1,16 @@
-﻿using Bookstore.Core.Models.Entities;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Bookstore.Core.Models.Entities;
+using Bookstore.Core.Models.ModelsDTO.BookModels;
 using Bookstore.Core.Models.ModelsDTO.FilterModels;
 using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories.Interfaces;
 using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Bookstore.Core.Models.ModelsDTO.BookModels;
 
-namespace Bookstore.DAL.EF.Repositories
+namespace Bookstore.DAL.EF.Repositories.Repositories
 {
     public class BookRepository : BaseRepository<Book>, IBookRepository
     {
@@ -138,6 +139,11 @@ namespace Bookstore.DAL.EF.Repositories
 
             return result;
         }
+
+        public async Task<List<Book>> GetBooksByFilterStoreProcedureAsync(FilterForBookModel conditions)
+        {
+            throw new Exception();
+        }
     }
 
     public interface IBookRepository : IBaseRepository<Book>
@@ -147,5 +153,6 @@ namespace Bookstore.DAL.EF.Repositories
         public Task<GetMaxAndMinPriceInfo> GetMaxAndMinPriceAsync();
         //public Task<Book> GetBookUrlAndNameAsync(int bookId);
         public Task<List<Book>> GetBooksByFilterAsync(FilterForBookModel conditions);
+        public Task<List<Book>> GetBooksByFilterStoreProcedureAsync(FilterForBookModel conditions);
     }
 }

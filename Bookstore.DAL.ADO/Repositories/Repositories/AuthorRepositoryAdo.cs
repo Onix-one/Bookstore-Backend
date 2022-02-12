@@ -1,20 +1,24 @@
-﻿using Bookstore.Core.Models.Entities;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Bookstore.Core.Models.Entities;
 using Bookstore.DAL.ADO.Extensions;
 using Bookstore.DAL.EF.Context;
-using Bookstore.DAL.EF.Repositories;
+using Bookstore.DAL.EF.Repositories.Repositories;
 using Microsoft.Data.SqlClient;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Bookstore.DAL.ADO.Repositories
+namespace Bookstore.DAL.ADO.Repositories.Repositories
 {
     public class AuthorRepositoryAdo : BaseRepository<Author>, IAuthorRepositoryAdo
     {
         //TODO How not to harcode
-        string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Database=bookStore;Trusted_Connection=True;";
+        private string connectionString;
+        private DatabaseContextAdo _databaseContextAdo;
 
-        public AuthorRepositoryAdo(BookStoreDbContext bookStoreDbContext) : base(bookStoreDbContext)
+        public AuthorRepositoryAdo(BookStoreDbContext bookStoreDbContext,
+            DatabaseContextAdo databaseContextAdo, string connectionString) : base(bookStoreDbContext)
         {
+            _databaseContextAdo = databaseContextAdo;
+            this.connectionString = connectionString;
         }
 
         public async Task<List<Author>> GetAllAuthorsNameSurnameIdAsync()

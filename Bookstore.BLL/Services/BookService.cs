@@ -11,67 +11,51 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Bookstore.Core.Models.ModelsDTO.FilterModels;
+using Bookstore.DAL.EF.Repositories.Interfaces;
+using Bookstore.DAL.EF.Repositories.Repositories;
 
 namespace Bookstore.BLL.Services
 {
     public class BookService : IBookService
     {
         private readonly IBookRepositoryAdo _bookRepositoryAdo;
-        private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;
-        private readonly IAuthorRepository _authorRepository;
-        private readonly IBookImageService _bookImageService;
-        private readonly IBookImageRepository _bookImageRepository;
-        private readonly IGenreOfBookRepository _genreOfBookRepository;
         private readonly IFileService _fileService;
+        private readonly IBookImageService _bookImageService;
+        private readonly IUnitOfWork _unitOfWork;
         public BookService(IBookRepositoryAdo bookRepositoryAdo,
             IMapper mapper,
-            IAuthorRepository authorRepository,
-            IBookRepository bookRepository,
             IBookImageRepository bookImageRepository,
             IBookImageService bookImageService,
             IGenreOfBookRepository genreOfBookRepository,
-            IFileService fileService)
+            IFileService fileService, IUnitOfWork unitOfWork)
         {
             _bookRepositoryAdo = bookRepositoryAdo;
             _mapper = mapper;
-            _authorRepository = authorRepository;
-            _bookRepository = bookRepository;
-            _bookImageRepository = bookImageRepository;
             _bookImageService = bookImageService;
-            _genreOfBookRepository = genreOfBookRepository;
             _fileService = fileService;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task AddNewBookAsync(CreateNewBookModel book, string rootPath)
         {
-            var genres = new List<GenreOfBook>();
-            var authors = new List<Author>();
+            var genres = await _unitOfWork.GenreOfBookRepository.GetByListOfIdAsync(book.GenresOfBookId);
+
+            var authors = await _unitOfWork.AuthorRepository.GetByListOfIdAsync(book.AuthorsId);
 
             var images = new List<BookImage>();
-
-            foreach (var id in book.GenresOfBookId)
-            {
-                var genre = await _genreOfBookRepository.GetByIdAsync(id);
-                genres.Add(genre);
-            }
-
-            foreach (var id in book.AuthorsId)
-            {
-                var author = await _authorRepository.GetByIdAsync(id);
-                authors.Add(author);
-            }
 
             var newBook = _mapper.Map<Book>(book);
 
             newBook.Authors = authors;
             newBook.GenreOfBooks = genres;
 
-            await _bookRepositoryAdo.SaveAsync(newBook);
+            await _unitOfWork.BookRepository.SaveAsync(newBook);
+            await _unitOfWork.SaveAsync();
 
             _fileService.CreateNewFolderForBook(rootPath, newBook.Id);
 
-            //create new BookImage. Save in database. Save image in folder. Save imageUrl in database.
+            //create new BookImage. SaveAsync in database. SaveAsync image in folder. SaveAsync imageUrl in database.
             foreach (var image in book.ImageFiles)
             {
                 var newImage = new BookImage { Book = newBook };
@@ -86,7 +70,7 @@ namespace Bookstore.BLL.Services
 
                 newImage.ImageUrl = imageUrl;
 
-                await _bookImageRepository.SaveAsync(newImage);
+                await _unitOfWork.BookImageRepository.SaveAsync(newImage);
 
                 images.Add(newImage);
             }
@@ -100,7 +84,8 @@ namespace Bookstore.BLL.Services
             newBook.BookUrl = bookUrl;
             newBook.Images = images;
 
-            await _bookRepository.SaveAsync(newBook);
+            await _unitOfWork.BookRepository.SaveAsync(newBook);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteBookAsync(int bookId)
@@ -113,11 +98,12 @@ namespace Bookstore.BLL.Services
             }
 
             await _bookRepositoryAdo.DeleteAsync(bookToDelete);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task<BookDTO> GetBookByIdAsync(int bookId)
         {
-            var book = await _bookRepository.GetByIdAsync(bookId); // TODO What a fuck with include
+            var book = await _unitOfWork.BookRepository.GetByIdAsync(bookId); // TODO What a fuck with include
 
             if (book == null)
             {
@@ -131,7 +117,7 @@ namespace Bookstore.BLL.Services
 
         public async Task<GetMaxAndMinPriceInfo> GetMinAndMaxPriceAsync()
         {
-            return await _bookRepository.GetMaxAndMinPriceAsync();
+            return await _unitOfWork.BookRepository.GetMaxAndMinPriceAsync();
         }
 
         public async Task<LoadBookModel> LoadBookAsync(int bookId)
@@ -153,7 +139,7 @@ namespace Bookstore.BLL.Services
         //TODO This method not work and maybe we will not use it
         public async Task<List<BooksForAuthorFilter>> GetBooksByAuthorAsync(int authorId)
         {
-            var author = await _authorRepository.GetByIdAsync(authorId);
+            var author = await _unitOfWork.AuthorRepository.GetByIdAsync(authorId);
 
             if (author == null)
             {
@@ -165,7 +151,7 @@ namespace Bookstore.BLL.Services
 
         public async Task<List<BooksAfterFilterModel>> GetBooksByFilterAsync(FilterForBookModel conditions)
         {
-            var books = await _bookRepository.GetBooksByFilterAsync(conditions);
+            var books = await _unitOfWork.BookRepository.GetBooksByFilterAsync(conditions);
 
             return _mapper.Map<List<BooksAfterFilterModel>>(books);
         }

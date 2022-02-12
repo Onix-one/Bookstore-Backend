@@ -24,16 +24,14 @@ namespace Bookstore.Backend.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IAuthorService _authorService;
-        private readonly IGenreOfBookRepository _genreOfBookRepository;
         private readonly ILogger<AuthorController> _logger;
 
         public AuthorController(IMapper mapper,
             IAuthorService authorService,
-            IGenreOfBookRepository genreOfBookRepository, ILogger<AuthorController> logger)
+            ILogger<AuthorController> logger)
         {
             _mapper = mapper;
             _authorService = authorService;
-            _genreOfBookRepository = genreOfBookRepository;
             _logger = logger;
         }
 
@@ -55,7 +53,7 @@ namespace Bookstore.Backend.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{authorId}")]
         public async Task<ActionResult> DeleteAuthor(int authorId)
         {
             await _authorService.DeleteAuthorAsync(authorId);
@@ -80,7 +78,7 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<AuthorDTO>> GetAllAuthorsByPartOfName(string partOFName)
+        public async Task<ActionResult<AuthorNamesAndIdInfo>> GetAllAuthorsByPartOfName(string partOFName)
         {
             var result = await _authorService.GetAllAuthorsByPartOfNameAsync(partOFName);
 
@@ -99,7 +97,7 @@ namespace Bookstore.Backend.Controllers
 
             return BadRequest(result);
         }
-        [HttpGet]
+        [HttpGet("{authorId}")]
         public async Task<ActionResult<AuthorDTO>> GetAuthorByIdAsync(int authorId)
         {
             var result = await _authorService.GetAuthorByIdAsync(authorId);

@@ -6,46 +6,50 @@ using Bookstore.DAL.EF.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bookstore.Core.Models.ModelsDTO.AuthorModels;
+using Bookstore.DAL.EF.Repositories.Interfaces;
 
 namespace Bookstore.BLL.Services
 {
     public class GenreOfBookService : IGenreOfBookService
     {
-        private readonly IGenreOfBookRepository _genreOfBookRepository;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GenreOfBookService(IGenreOfBookRepository genreOfBookRepository,
-            IMapper mapper)
+        public GenreOfBookService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _genreOfBookRepository = genreOfBookRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task CreateNewGenreOfBookAsync(GenreOfBook author)
         {
-            await _genreOfBookRepository.SaveAsync(author);
+            await _unitOfWork.GenreOfBookRepository.SaveAsync(author);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task DeleteGenreOfBookAsync(int genreId)
         {
-            var genreToDelete = await _genreOfBookRepository.GetByIdAsync(genreId);
+            var genreToDelete = await _unitOfWork.GenreOfBookRepository.GetByIdAsync(genreId);
 
             if (genreToDelete == null)
             {
                 throw new ArgumentNullException(nameof(genreToDelete), $"GenreOfBook with id={genreId} doesn't exist");
             }
 
-            await _genreOfBookRepository.DeleteAsync(genreToDelete);
+            await _unitOfWork.GenreOfBookRepository.DeleteAsync(genreToDelete);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task EditGenreOfBookAsync(GenreOfBook genre)
         {
-            await _genreOfBookRepository.SaveAsync(genre);
+            await _unitOfWork.GenreOfBookRepository.SaveAsync(genre);
+            await _unitOfWork.SaveAsync();
         }
 
         public async Task<List<GetAllGenreModel>> GetAllGenresOfBookAsync()
         {
-            var genresOfBooks = await _genreOfBookRepository.GetAllAsync();
+            var genresOfBooks = await _unitOfWork.GenreOfBookRepository.GetAllAsync();
 
             var authorsDto = _mapper.Map<List<GetAllGenreModel>>(genresOfBooks);
 
@@ -54,9 +58,15 @@ namespace Bookstore.BLL.Services
 
         public async Task<GenreOfBookDTO> GetGenreOfBookByIdAsync(int genreId)
         {
-            var genre = await _genreOfBookRepository.GetByIdAsync(genreId);
+            var genre = await _unitOfWork.GenreOfBookRepository.GetByIdAsync(genreId);
 
             return _mapper.Map<GenreOfBookDTO>(genre);
+        }
+        public async Task<List<GenreOfBookNamesAndIdInfo>> GetAllGenresByPartOfNameAsync(string partOfName)
+        {
+            var genres = await _unitOfWork.GenreOfBookRepository.GetAllGenresByPartOfNameAsync(partOfName.ToString().ToUpper());
+
+            return _mapper.Map<List<GenreOfBookNamesAndIdInfo>>(genres);
         }
     }
 
@@ -67,5 +77,6 @@ namespace Bookstore.BLL.Services
         public Task EditGenreOfBookAsync(GenreOfBook genre);
         public Task<List<GetAllGenreModel>> GetAllGenresOfBookAsync();
         public Task<GenreOfBookDTO> GetGenreOfBookByIdAsync(int genreId);
+        public Task<List<GenreOfBookNamesAndIdInfo>> GetAllGenresByPartOfNameAsync(string partOFName);
     }
 }

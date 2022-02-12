@@ -7,12 +7,16 @@ using Bookstore.BLL.Interfaces;
 using Bookstore.BLL.Services;
 using Bookstore.DAL.ADO.Repositories;
 using Bookstore.DAL.ADO.Repositories.Interfaces;
+using Bookstore.DAL.ADO.Repositories.Repositories;
 using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories;
+using Bookstore.DAL.EF.Repositories.Interfaces;
+using Bookstore.DAL.EF.Repositories.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -28,7 +32,7 @@ namespace Bookstore.Backend.Extensions
             services.AddSingleton<IMapper, Mapper>();
         }
 
-        public static void AddServices(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IAuthorService, AuthorService>();
             services.AddTransient<IBookService, BookService>();
@@ -36,8 +40,10 @@ namespace Bookstore.Backend.Extensions
             services.AddTransient<ICustomerService, CustomerService>();
             services.AddTransient<IGenreOfBookService, GenreOfBookService>();
             services.AddTransient<IFileService, FileService>();
+
+            services.AddTransient<IDatabaseContextAdo, DatabaseContextAdo>(x => new DatabaseContextAdo(configuration.GetConnectionString("bookStore")));
         }
-        public static void AddRepositories(this IServiceCollection services)
+        public static void AddRepositories(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<IAuthorRepository, AuthorRepository>();
             services.AddTransient<IBookRepositoryAdo, BookRepositoryAdo>();
@@ -45,7 +51,8 @@ namespace Bookstore.Backend.Extensions
             services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<IGenreOfBookRepository, GenreOfBookRepository>();
             services.AddTransient<IBookRepository, BookRepository>();
-            services.AddTransient<IAuthorRepositoryAdo, AuthorRepositoryAdo>();
+            services.AddTransient<IAuthorRepositoryAdo, AuthorRepositoryAdo>(x => new AuthorRepositoryAdo(x.GetService<BookStoreDbContext>(), x.GetService<DatabaseContextAdo>(), configuration.GetConnectionString("bookStore")));
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
 
         }
         public static void AddSwagger(this IServiceCollection services)
@@ -133,6 +140,7 @@ namespace Bookstore.Backend.Extensions
         {
             services.Configure<SwaggerUrlConfiguration>(configuration.GetSection("SwaggerUrlConfiguration"));
             services.Configure<SwaggerPathConfiguration>(configuration.GetSection("SwaggerPathConfiguration"));
+            services.Configure<ConnectionDatabaseConfiguration>(configuration.GetSection("ConnectionStrings"));
         }
 
         public static void AddDatabaseContext(this IServiceCollection services, IConfiguration configuration)

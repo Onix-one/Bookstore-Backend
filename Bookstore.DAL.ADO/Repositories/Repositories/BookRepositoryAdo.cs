@@ -8,10 +8,10 @@ using Bookstore.Core.Models.ModelsDTO.FilterModels;
 using Bookstore.DAL.ADO.Extensions;
 using Bookstore.DAL.ADO.Repositories.Interfaces;
 using Bookstore.DAL.EF.Context;
-using Bookstore.DAL.EF.Repositories;
+using Bookstore.DAL.EF.Repositories.Repositories;
 using Microsoft.Data.SqlClient;
 
-namespace Bookstore.DAL.ADO.Repositories
+namespace Bookstore.DAL.ADO.Repositories.Repositories
 {
     public class BookRepositoryAdo : BaseRepository<Book>, IBookRepositoryAdo
     {

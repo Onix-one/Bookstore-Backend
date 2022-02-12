@@ -51,17 +51,15 @@ namespace Bookstore.IdentityApi.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> Login(LoginDto modelDto)
+        public async Task<ActionResult<LoginResultModel>> Login(LoginDto modelDto)
         {
-            var (token, identityResult) = await _accountService.LoginAsync(modelDto);
+            var (token, identityResult,user,roles) = await _accountService.LoginAsync(modelDto);
             if (!identityResult.Succeeded)
             {
                 return BadRequest();
             }
-            return Ok(new
-            {
-                accessToken = token
-            });
+
+            return Ok(new LoginResultModel(new LoginUserInfoModel(user.UserName, user.Email), token, roles));
         }
         
         [HttpGet]

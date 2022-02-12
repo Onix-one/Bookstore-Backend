@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bookstore.Core.Models.Entities;
@@ -6,7 +7,7 @@ using Bookstore.DAL.EF.Context;
 using Bookstore.DAL.EF.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bookstore.DAL.EF.Repositories
+namespace Bookstore.DAL.EF.Repositories.Repositories
 {
     public class AuthorRepository : BaseRepository<Author>, IAuthorRepository
     {
@@ -37,11 +38,21 @@ namespace Bookstore.DAL.EF.Repositories
             return result;
         }
 
-        public async Task<List<Author>> GetAllAuthorsByPartOfNameAsync(string partOFName)
+        public async Task<List<Author>> GetAllAuthorsByPartOfNameAsync(string partOfName)
         {
-            return await _dbSet.Where(t => t.FirstName.ToUpper().StartsWith(partOFName) 
-                                           || t.SecondName.ToUpper().StartsWith(partOFName))
-                .ToListAsync();
+            if (partOfName == null)
+            {
+                throw new ArgumentNullException(nameof(partOfName));
+            }
+
+            Microsoft.Data.SqlClient.SqlParameter param = new Microsoft.Data.SqlClient.SqlParameter("@partOfName", partOfName);
+                var authors =await _dbSet.FromSqlRaw("EXECUTE GetAllAuthorsByPartOfName @partOfName", param).ToListAsync();
+                return authors;
+
+
+                //return await _dbSet.Where(t => t.FirstName.ToUpper().StartsWith(partOfName) 
+                //                               || t.SecondName.ToUpper().StartsWith(partOfName))
+                //    .ToListAsync();
         }
     }
 

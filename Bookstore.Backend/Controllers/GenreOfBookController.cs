@@ -14,15 +14,12 @@ namespace Bookstore.Backend.Controllers
     public class GenreOfBookController : ControllerBase
     {
         private readonly IMapper _mapper;
-        private ICustomerService _customerService;
         private readonly IGenreOfBookService _genreOfBookService;
 
         public GenreOfBookController(IMapper mapper,
-            ICustomerService customerService,
             IGenreOfBookService genreOfBookService)
         {
             _mapper = mapper;
-            _customerService = customerService;
             _genreOfBookService = genreOfBookService;
         }
 
@@ -44,7 +41,7 @@ namespace Bookstore.Backend.Controllers
             return Ok();
         }
 
-        [HttpDelete]
+        [HttpDelete("{genreId}")]
         public async Task<ActionResult> Delete(int genreId)
         {
             await _genreOfBookService.DeleteGenreOfBookAsync(genreId);
@@ -73,7 +70,7 @@ namespace Bookstore.Backend.Controllers
         /// </summary>
         /// <param name="genreId"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("{genreId}")]
         public async Task<ActionResult<AuthorDTO>> GetGenreOfBookByIdAsync(int genreId)
         {
             var result = await _genreOfBookService.GetGenreOfBookByIdAsync(genreId);
@@ -84,6 +81,14 @@ namespace Bookstore.Backend.Controllers
             }
 
             return BadRequest();
+        }
+
+        [HttpGet("{partOfName}")]
+        public async Task<ActionResult<GenreOfBookNamesAndIdInfo>> GetAllGenresByPartOfName(string partOfName)
+        {
+            var result = await _genreOfBookService.GetAllGenresByPartOfNameAsync(partOfName);
+
+            return Ok(result);
         }
     }
 }
