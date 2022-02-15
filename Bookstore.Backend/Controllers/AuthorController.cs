@@ -7,12 +7,7 @@ using Bookstore.Core.Models.ModelsDTO.AuthorModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
-using Bookstore.DAL.EF.Repositories;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
-using NLog;
-using LogLevel = NLog.LogLevel;
 
 
 namespace Bookstore.Backend.Controllers
@@ -78,11 +73,11 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<AuthorNamesAndIdInfo>> GetAllAuthorsByPartOfName(string partOFName)
+        public async Task<List<AuthorNamesAndIdInfo>> GetAllAuthorsByPartOfName(string partOFName)
         {
             var result = await _authorService.GetAllAuthorsByPartOfNameAsync(partOFName);
 
-            return Ok(result);
+            return result;
         }
 
         [HttpGet]
