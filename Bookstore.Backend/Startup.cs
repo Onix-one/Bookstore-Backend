@@ -26,9 +26,9 @@ namespace Bookstore.Backend
         {
             services.AddDatabaseContext(Configuration);
             services.AddConfigurations(Configuration);
-            services.AddControllers()
-                .AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
+            services.AddControllers();
+                //.AddJsonOptions(x =>
+                //x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             services.AddSwagger();
             services.AddAuthenticationWithJwtToken(Configuration);
             services.AddAuthorizationWithRole();
@@ -48,7 +48,7 @@ namespace Bookstore.Backend
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Bookstore.Backend v1"));
-                GenerateClientsAsync(env, swaggerUrlConfiruration.Value, swaggerPathConfiruration.Value);
+                //GenerateClientsAsync(env, swaggerUrlConfiruration.Value, swaggerPathConfiruration.Value);
             }
 
             app.UseRouting();
