@@ -78,15 +78,15 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<AuthorNamesAndIdInfo>> GetAllAuthorsByPartOfName(string partOFName)
+        public async Task<ActionResult<List<AuthorNamesAndIdInfo>>> GetAllAuthorsByPartOfName(string partOFName)
         {
             var result = await _authorService.GetAllAuthorsByPartOfNameAsync(partOFName);
 
             return Ok(result);
-        }
+            }
 
         [HttpGet]
-        public async Task<ActionResult<AuthorNamesAndIdInfo>> GetAllAuthorsNameAndId()
+        public async Task<ActionResult<List<AuthorNamesAndIdInfo>>> GetAllAuthorsNameAndId()
         {
             var result = await _authorService.GetAllAuthorsNameAndId();
 

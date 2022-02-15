@@ -33,7 +33,6 @@ namespace Bookstore.Backend.Tools
                     ExceptionClass = "BestClass",
                     
 
-
                 }
             );
             var tsCode = generator.GenerateFile();

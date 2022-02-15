@@ -45,14 +45,14 @@ namespace Bookstore.DAL.EF.Repositories.Repositories
                 throw new ArgumentNullException(nameof(partOfName));
             }
 
-            Microsoft.Data.SqlClient.SqlParameter param = new Microsoft.Data.SqlClient.SqlParameter("@partOfName", partOfName);
-                var authors =await _dbSet.FromSqlRaw("EXECUTE GetAllAuthorsByPartOfName @partOfName", param).ToListAsync();
-                return authors;
+            //Microsoft.Data.SqlClient.SqlParameter param = new Microsoft.Data.SqlClient.SqlParameter("@partOfName", partOfName);
+            //    var authors =await _dbSet.FromSqlRaw("EXECUTE GetAllAuthorsByPartOfName @partOfName", param).ToListAsync();
+            //    return authors;
 
 
-                //return await _dbSet.Where(t => t.FirstName.ToUpper().StartsWith(partOfName) 
-                //                               || t.SecondName.ToUpper().StartsWith(partOfName))
-                //    .ToListAsync();
+            return await _dbSet.Where(t => t.FirstName.ToUpper().StartsWith(partOfName)
+                                           || t.SecondName.ToUpper().StartsWith(partOfName))
+                .ToListAsync();
         }
     }
 
