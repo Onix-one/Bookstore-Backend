@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Bookstore.Core.Models.ModelsDTO.BookImageModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 
@@ -25,10 +26,10 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpPost] //TODO not work iFormFile
-        public async Task<ActionResult> AddImageToBook([FromBody] List<IFormFile> images, int bookId)
+        public async Task<ActionResult> AddImageToBook([FromBody] AddImageModel newImages )
         {
             var rootPath = _webHostEnvironment.WebRootPath;
-            _bookImageService.AddNewImageToExistBookAsync(images, bookId, rootPath);
+           await  _bookImageService.AddNewImageToExistBookAsync(newImages.Images, newImages.BookId, rootPath);
             return Ok();
         }
 

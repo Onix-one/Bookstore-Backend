@@ -23,27 +23,39 @@ namespace Bookstore.Backend.Tools
             _swaggerPathConfiguration = swaggerPathConfiruration;
         }
 
-        public async Task<string> GenerateBackendTypescriptDefinition(TypeScriptClientGeneratorSettings settings = default, bool toFrontendFile = true)
+        public async Task GenerateBackendTypescriptDefinition(TypeScriptClientGeneratorSettings settings = default, bool toFrontendFile = true)
         {
-            var generator = new TypeScriptClientGenerator(
+            var generatorApi = new TypeScriptClientGenerator(
                 await OpenApiDocument.FromUrlAsync(_swaggerUrlConfiguration.ApplicationUrlHTTP),
                 settings ?? new TypeScriptClientGeneratorSettings
                 {
                     Template = TypeScriptTemplate.Axios,
-                    ExceptionClass = "BestClass",
-                    
-
+                    ClassName = "ClientApi"
                 }
             );
-            var tsCode = generator.GenerateFile();
+            var tsCodeApi = generatorApi.GenerateFile();
             if (toFrontendFile)
             {
                 var fullPath = Path.GetFullPath(Path.Combine(_hostEnvironment.ContentRootPath, _swaggerPathConfiguration.MainGeneratedTypeScriptOutputPath));
                 Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-                await File.WriteAllTextAsync(fullPath, tsCode);
+                await File.WriteAllTextAsync(fullPath, tsCodeApi);
             }
-            return tsCode;
 
+            var generatorIentityApi = new TypeScriptClientGenerator(
+                await OpenApiDocument.FromUrlAsync(_swaggerUrlConfiguration.ApplicationUrlHTTPIdentityApi),
+                settings ?? new TypeScriptClientGeneratorSettings
+                {
+                    Template = TypeScriptTemplate.Axios,
+                    ClassName = "ClientIdentityApi"
+                }
+            );
+            var tsCodeIdentityApi = generatorIentityApi.GenerateFile();
+            if (toFrontendFile)
+            {
+                var fullPath = Path.GetFullPath(Path.Combine(_hostEnvironment.ContentRootPath, _swaggerPathConfiguration.MainGeneratedTypeScriptOutputPathIdentityApi));
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+                await File.WriteAllTextAsync(fullPath, tsCodeIdentityApi);
+            }
         }
     }
 }

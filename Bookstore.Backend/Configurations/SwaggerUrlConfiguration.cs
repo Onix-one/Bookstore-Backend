@@ -4,5 +4,7 @@ namespace Bookstore.Backend.Configurations
     {
         public string ApplicationUrlHTTP { get; set; }
         public string ApplicationUrlPipelineServiceHTTP { get; set; }
+        public string ApplicationUrlHTTPIdentityApi { get; set; }
+        
     }
 }

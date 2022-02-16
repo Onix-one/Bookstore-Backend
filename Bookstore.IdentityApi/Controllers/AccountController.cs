@@ -90,5 +90,35 @@ namespace Bookstore.IdentityApi.Controllers
             var userDto = await _accountService.GetCurrentUserAsync(user);
             return Ok(userDto);
         }
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<LoginResultModel> RefreshToken(string email, string refreshToken)
+        {
+            //var user = await _userManager.FindByEmailAsync(email);
+            //if (user == null)
+            //{
+            //    throw new ConfirmEmailExeption(HttpStatusCode.BadRequest, new { Email = "Email wrong" });
+            //}
+
+            //if (user.RefreshToken == null || user.RefreshToken != refreshToken || user.RefreshTokenExpireaAt < DateTime.Now)
+            //{
+            //    throw new RefreshTokenExeption(HttpStatusCode.BadRequest, "Unvalid refreshtoken: ");
+            //}
+
+            //var roles = await _userManager.GetRolesAsync(user); //TODO create new method. Solid
+            //var accessToken = GetAccessToken(user, roles);
+            //var newRefreshToken = _refreshTokenFactory.CreateRefreshToken();
+
+            //return new LoginResultModel(new LoginUserInfoModel(user.UserName, user.Email), accessToken, roles, newRefreshToken);
+            throw new Exception();
+        }
+
+        private async Task SaveRefreshTokenInDBAsync(User user, string refreshToken)
+        {
+            //user.RefreshToken = refreshToken;
+            //user.RefreshTokenExpireaAt = DateTime.UtcNow.AddDays(7);
+            //await _userManager.UpdateAsync(user);
+            throw new Exception();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Collections.Generic;
+using AutoMapper;
 using Bookstore.BLL.Services;
 using Bookstore.Core.Models.Entities;
 using Bookstore.Core.Models.ModelsDTO;
@@ -24,7 +25,7 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateNewGenreOfBookModel genre)
+        public async Task<ActionResult> CreateGenre([FromBody] CreateNewGenreOfBookModel genre)
         {
             var newGenre = _mapper.Map<GenreOfBook>(genre);
 
@@ -32,8 +33,8 @@ namespace Bookstore.Backend.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Edit([FromBody] GenreOfBookDTO genre)
+        [HttpPut]
+        public async Task<ActionResult> EditGenre([FromBody] GenreOfBookDTO genre)
         {
             var newGenre = _mapper.Map<GenreOfBook>(genre);
             await _genreOfBookService.EditGenreOfBookAsync(newGenre);
@@ -42,7 +43,7 @@ namespace Bookstore.Backend.Controllers
         }
 
         [HttpDelete("{genreId}")]
-        public async Task<ActionResult> Delete(int genreId)
+        public async Task<ActionResult> DeleteGenre(int genreId)
         {
             await _genreOfBookService.DeleteGenreOfBookAsync(genreId);
 
@@ -54,7 +55,7 @@ namespace Bookstore.Backend.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<GetAllGenreModel>> GetAll()
+        public async Task<ActionResult<List<GetAllGenreModel>>> GetAllGenres()
         {
             var result = await _genreOfBookService.GetAllGenresOfBookAsync();
 
@@ -71,7 +72,7 @@ namespace Bookstore.Backend.Controllers
         /// <param name="genreId"></param>
         /// <returns></returns>
         [HttpGet("{genreId}")]
-        public async Task<ActionResult<AuthorDTO>> GetGenreOfBookByIdAsync(int genreId)
+        public async Task<ActionResult<AuthorDTO>> GetGenreOfBookById(int genreId)
         {
             var result = await _genreOfBookService.GetGenreOfBookByIdAsync(genreId);
 

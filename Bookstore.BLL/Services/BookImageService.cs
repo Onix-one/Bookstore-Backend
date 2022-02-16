@@ -15,6 +15,7 @@ namespace Bookstore.BLL.Services
     {
         private readonly IFileService _fileService;
         private readonly IUnitOfWork _unitOfWork;
+        public BookImage NewImage;
 
         public BookImageService(IFileService fileService,
             IUnitOfWork unitOfWork)
@@ -43,19 +44,19 @@ namespace Bookstore.BLL.Services
 
             foreach (var item in images)
             {
-                var newImage = new BookImage() { Book = book };
+                NewImage = new BookImage() { Book = book };
 
-                await _unitOfWork.BookImageRepository.SaveAsync(newImage);
+                await _unitOfWork.BookImageRepository.SaveAsync(NewImage);
 
-                var imageUrl = _fileService.GetFullPathToImage(book.Name, book.Id, newImage.Id);
+                var imageUrl = _fileService.GetFullPathToImage(book.Name, book.Id, NewImage.Id);
 
                 var fullPath = Path.Combine(rootPath, imageUrl);
 
                await  _fileService.SaveFileInFolderAsync(item, fullPath);
 
-                newImage.ImageUrl = imageUrl;
+               NewImage.ImageUrl = imageUrl;
 
-                await _unitOfWork.BookImageRepository.SaveAsync(newImage);
+                await _unitOfWork.BookImageRepository.SaveAsync(NewImage);
             }
             await _unitOfWork.SaveAsync();
         }

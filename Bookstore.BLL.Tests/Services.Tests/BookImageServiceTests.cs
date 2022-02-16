@@ -27,22 +27,30 @@ namespace Bookstore.BLL.Tests.Services.Tests
         }
 
         [Test]
-        [TestCase(1,"rootPath")]
-        public async Task AddNewImageToExistBookAsync_PassWrongId_GetException(int bookId, string rootPath)
+        [TestCase(1, "rootPath")]
+        public async Task AddNewImageToExistBookAsync_(int bookId, string rootPath)
         {
             // Arrange
             var listIformFiles = new List<IFormFile>();
-            _bookImageService = new BookImageService(_fileService.Object,_unitOfWork.Object);
+            var book = new Book() { Id = 1, Name = "best" };
+            _bookImageService = new BookImageService(_fileService.Object, _unitOfWork.Object);
             _unitOfWork.Setup(x => x.BookRepository.GetByIdAsync(bookId)).ReturnsAsync((Book)null);
 
+            _unitOfWork.Setup(x => x.BookImageRepository.SaveAsync(_bookImageService.NewImage));
+            _fileService.Setup(x => x.GetFullPathToImage(book.Name, book.Id, _bookImageService.NewImage.Id)).Returns("imageURL");
+
+
             // Act
-             _bookImageService.AddNewImageToExistBookAsync(listIformFiles, bookId, rootPath);
+
+
+            _bookImageService.AddNewImageToExistBookAsync(listIformFiles, bookId, rootPath);
             //Assert
-            _unitOfWork.Verify(x => x.BookRepository.GetByIdAsync(bookId));
-            Assert.ThrowsAsync<ArgumentNullException>(() => _bookImageService.AddNewImageToExistBookAsync(listIformFiles, bookId, rootPath));
+            _unitOfWork.Verify(x => x.BookImageRepository.SaveAsync(_bookImageService.NewImage));
+            _fileService.Verify(x => x.GetFullPathToImage(book.Name, book.Id, _bookImageService.NewImage.Id));
         }
     }
 }
+
 
 //var book = await _unitOfWork.BookRepository.GetByIdAsync(bookId);
 
